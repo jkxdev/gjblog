@@ -1,30 +1,35 @@
 package com.cmad.cmad.auth;
 
+import javax.crypto.KeyGenerator;
+import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
 import javax.xml.bind.DatatypeConverter;
 import java.security.Key;
+import java.security.NoSuchAlgorithmException;
+
 import io.jsonwebtoken.*;
+
+import java.util.Base64;
 import java.util.Date;   
-import javax.xml.bind.DatatypeConverter;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.Claims;
 
 public class jauth {
 	
 	// create new key
-	private String getSecret(){
+	private static String getSecret(){
 		SecretKey secretKey = null;
 		try {
-		secretKey = KeyGenerator.getInstance("AES").generateKey();
+			secretKey = KeyGenerator.getInstance("AES").generateKey();
 		} catch (NoSuchAlgorithmException e) {
-		e.printStackTrace();
+			e.printStackTrace();
 		}
 		// get base64 encoded version of the key
-		String encodedKey = Base64.getEncoder().encodeToString(secretKey.getEncoded());
+		return Base64.getEncoder().encodeToString(secretKey.getEncoded());
 	}
 	
 	//Sample method to construct a JWT
-	private String createJWT(String id, String issuer, String subject, long ttlMillis) {
+	private static String createJWT(String id, String issuer, String subject, long ttlMillis) {
 	 
 	    //The JWT signature algorithm we will be using to sign the token
 	    SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.HS256;
@@ -55,7 +60,7 @@ public class jauth {
 	}
 	
 	//Sample method to validate and read the JWT
-	private void parseJWT(String jwt) {
+	private static void parseJWT(String jwt) {
 	 
 	    //This line will throw an exception if it is not a signed JWS (as expected)
 	    Claims claims = Jwts.parser()         
@@ -67,5 +72,12 @@ public class jauth {
 	    System.out.println("Expiration: " + claims.getExpiration());
 	}
 	
+	public static String getJoken(String id, String issuer, String subject, long ttlMillis) {
+		return createJWT( id,  issuer,  subject, 115200);
+		
+	}
 	
+	public static void validateJoken(String jok) {
+		parseJWT(jok);
+	}
 }
