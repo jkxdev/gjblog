@@ -7,7 +7,6 @@
 	<packaging>war</packaging>
 	<name>Rendezvous Template</name>
 	<description>GJ blog application</description>
-	<url>https://github.com/glarimy/glarimy-jaxrs-jersey-jetty</url>
 	<organization>
 		<name>Glarimy Technology Services</name>
 		<url>www.glarimy.com</url>
@@ -22,4 +21,11 @@
 			<email>jk.xdev@gmail.com</email>
 		</developer>
 	</developers>
+	<dependencies>
+		<dependency>
+		    <groupId>io.jsonwebtoken</groupId>
+		    <artifactId>jjwt</artifactId>
+		    <version>0.6.0</version>
+		</dependency>
+	</dependencies>
 </project>
