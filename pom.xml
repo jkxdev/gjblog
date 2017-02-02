@@ -1,0 +1,25 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>com.cmad</groupId>
+	<artifactId>cmad</artifactId>
+	<version>1.0.0</version>
+	<packaging>war</packaging>
+	<name>Rendezvous Template</name>
+	<description>GJ blog application</description>
+	<url>https://github.com/glarimy/glarimy-jaxrs-jersey-jetty</url>
+	<organization>
+		<name>Glarimy Technology Services</name>
+		<url>www.glarimy.com</url>
+	</organization>
+	<developers>
+		<developer>
+			<name>Goutham Guntnur</name>
+			<email>gguntnur@gmail.com</email>
+		</developer>
+		<developer>
+			<name>Joe dev</name>
+			<email>jk.xdev@gmail.com</email>
+		</developer>
+	</developers>
+</project>
