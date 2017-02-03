@@ -1,20 +1,72 @@
 $(document).ready(function() {
-
+  $('#login').click(function() {
+    $.ajax({
+      type : 'post',
+      url : 'http://localhost:8080/api/login/',
+      data: '{"username": "' + $('#uname').val() + '","pwd":"' + CryptoJS.SHA256($('#pwd').val()) + '"}',
+      contentType: "application/json;charset=utf-8",
+      success : function(response) {
+        //alert( "Data Loaded: " + response );
+        $("#section_blog_post").show();
+        $('#section_blog_post [id^="section"]').hide();
+        //window.location="home.html";
+      },
+      error: function(response){
+        alert ("error " + response );
+      }
+    });
+  });
+  $('#register').click(function() {
+	 var badadata = '{"fullName": "' + $('#fullname').val() + 
+          '","pwd":"' +$('#pwd').val() + 
+          '","username":"' +$('#email').val() +
+          '","phno":"' +$('#phno').val() +
+          '"}';
+	 console.log(badadata);
+    $.ajax({
+      type : 'post',
+      url : 'http://localhost:8080/api/user/registeration/',
+      data: badadata,
+      contentType: "application/json;charset=utf-8",
+      success : function(response) {
+        //alert( "Data Loaded: " + response );
+        $("#section_blog_post").show();
+        $('#section_blog_post [id^="section"]').hide();
+        //window.location="home.html";
+      },
+      error: function(response){
+    	  alert ("error " + response );
+      }
+    });
+  });
+  
+  $("cancel").click(function () {
+        location.href = "index.html";
+    });
 	$("#header").load("header.html"); 
 	$("#footer").load("footer.html"); 
-	$("#section-list").load("section-list.html");
-	
-	$("#section_blog_post").hide();
-	$("#section-list").hide();
+//	$("#section-list").load("section-list.html").hide();
+//	$("#section-blog").load("section-blog.html").hide();
 
-	$('#s-list').click(function() {
+	$("#section-blog").hide();
+	$("#section-list").hide();
+	console.log("document .ready loaded the contents and hid the divs");
+
+
+	$("#s-list").click(function() {
+		console.log("s-list is clicked");
+		$("#section-blog").empty();
+		$("#section-list").load("section-list.html");
 		$('[id^="section"]').hide();
 		$("#section-list").show();
-
 	});
+	
 	$("#s-latest").click(function() {
+		console.log("s-latest is clicked");
+		$("#section-list").empty();
+		$("#section-blog").load("section-blog.html");
 		$('[id^="section"]').hide();
-		$("#section_blog_post").show();
+		$("#section-blog").show();
 	});
 });
 
