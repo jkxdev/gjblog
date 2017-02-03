@@ -1,5 +1,20 @@
 $(document).ready(function() {
-  $('#login').click(function() {
+  
+  
+  $("cancel").click(function () {
+        location.href = "index.html";
+    });
+	$("#header").load("header.html"); 
+	$("#footer").load("footer.html"); 
+//	$("#section-list").load("section-list.html").hide();
+//	$("#section-blog").load("section-blog.html").hide();
+
+	$("#section-blog").hide();
+	$("#section-list").hide();
+	console.log("document .ready loaded the contents and hid the divs");
+
+});
+function login() {
     $.ajax({
       type : 'post',
       url : 'http://localhost:8080/api/login/',
@@ -15,14 +30,14 @@ $(document).ready(function() {
         alert ("error " + response );
       }
     });
-  });
-  $('#register').click(function() {
-	 var badadata = '{"fullName": "' + $('#fullname').val() + 
-          '","pwd":"' +$('#pwd').val() + 
-          '","username":"' +$('#email').val() +
-          '","phno":"' +$('#phno').val() +
-          '"}';
-	 console.log(badadata);
+}
+function register() {
+	var badadata = '{"fullName": "' + $('#fullname').val() + 
+      '","pwd":"' +$('#pwd').val() + 
+      '","username":"' +$('#email').val() +
+      '","phno":"' +$('#phno').val() +
+      '"}';
+	console.log(badadata);
     $.ajax({
       type : 'post',
       url : 'http://localhost:8080/api/user/registeration/',
@@ -38,37 +53,23 @@ $(document).ready(function() {
     	  alert ("error " + response );
       }
     });
-  });
-  
-  $("cancel").click(function () {
-        location.href = "index.html";
-    });
-	$("#header").load("header.html"); 
-	$("#footer").load("footer.html"); 
-//	$("#section-list").load("section-list.html").hide();
-//	$("#section-blog").load("section-blog.html").hide();
+ }
+function show_list() {
+	console.log("s-list is clicked");
+	$("#section-blog").empty();
+	$("#section-list").load("section-list.html");
+	$('[id^="section"]').hide();
+	$("#section-list").show();
+}
 
-	$("#section-blog").hide();
-	$("#section-list").hide();
-	console.log("document .ready loaded the contents and hid the divs");
+function show_latest() {
+	console.log("s-latest is clicked");
+	$("#section-list").empty();
+	$("#section-blog").load("section-blog.html");
+	$('[id^="section"]').hide();
+	$("#section-blog").show();
+}
 
-
-	$("#s-list").click(function() {
-		console.log("s-list is clicked");
-		$("#section-blog").empty();
-		$("#section-list").load("section-list.html");
-		$('[id^="section"]').hide();
-		$("#section-list").show();
-	});
-	
-	$("#s-latest").click(function() {
-		console.log("s-latest is clicked");
-		$("#section-list").empty();
-		$("#section-blog").load("section-blog.html");
-		$('[id^="section"]').hide();
-		$("#section-blog").show();
-	});
-});
 
 // // Select elems where 'attribute' ends with 'Dialog'
 // $("[attribute$='Dialog']"); 

@@ -52,7 +52,7 @@ a:hover {
 }
 
 .navbar-trans {
-    /*background-color:#2b2b2b;*/
+    background-color:rgba(135, 135, 135, 0.8);
     color:#cdcdcd;
     border-width:0;
 }
