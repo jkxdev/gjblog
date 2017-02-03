@@ -7,7 +7,9 @@ $(document).ready(function() {
       contentType: "application/json;charset=utf-8",
       success : function(response) {
         //alert( "Data Loaded: " + response );
-        window.location="home.html";
+        $("#section_blog_post").show();
+        $('#section_blog_post [id^="section"]').hide();
+        //window.location="home.html";
       },
       error: function(response){
         alert ("error " + response );
@@ -27,7 +29,9 @@ $(document).ready(function() {
       contentType: "application/json;charset=utf-8",
       success : function(response) {
         //alert( "Data Loaded: " + response );
-        window.location="home.html";
+        $("#section_blog_post").show();
+        $('#section_blog_post [id^="section"]').hide();
+        //window.location="home.html";
       },
       error: function(response){
     	  alert ("error " + response );
