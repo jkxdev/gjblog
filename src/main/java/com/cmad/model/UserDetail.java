@@ -1,4 +1,4 @@
-package com.cmad.cmad.model;
+package com.cmad.model;
 
 import org.bson.types.ObjectId;
 import org.mongodb.morphia.annotations.Entity;
@@ -14,7 +14,7 @@ public class UserDetail {
 	private String pwd;
 	private String fullName;
 	private String phno;
-	
+	private String areaofinterest;
 	
 	public String getUsername() {
 		return username;
@@ -34,17 +34,22 @@ public class UserDetail {
 	public void setFullName(String fullname) {
 		this.fullName = fullname;
 	}
-	
-	@Override
-	public String toString() {
-		// TODO Auto-generated method stub
-		return "UserDetail  username "+username+",fullname "+", pwd "+pwd;
-	}
 	public String getPhno() {
 		return phno;
 	}
 	public void setPhno(String phno) {
 		this.phno = phno;
+	}
+	public String getAreaofinterest() {
+		return areaofinterest;
+	}
+	public void setAreaofinterest(String areaofinterest) {
+		this.areaofinterest = areaofinterest;
+	}
+	@Override
+	public String toString() {
+		// TODO Auto-generated method stub
+		return "UserDetail  username: "+username+", fullname: "+", pwd: "+pwd+", phno: "+phno+" "+" areaofinterest: "+areaofinterest;
 	}
 	
 }

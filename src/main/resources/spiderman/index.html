@@ -39,6 +39,8 @@
             </section>
             <section class="container-fluid" id="section-list"></section>            
             <section class="container-fluid" id="section-blog"></section>
+            <section class="container-fluid" id="section-form"></section>
+            <section class="container-fluid" id="section-update-user"></section>
 
 
             <footer id="footer"></footer>
@@ -63,7 +65,7 @@
                                 <input id="pwd" type="password" class="form-control input-lg" placeholder="Password">
                             </div>
                             <div class="form-group">
-                                <button id="login" onclick="login()" class="btn btn-danger btn-lg btn-block">Sign In</button>
+                                <button id="login" onclick="profile_login()" class="btn btn-danger btn-lg btn-block">Sign In</button>
                             </div>
                         </form>
                     </div>
@@ -98,6 +100,61 @@
                             </div>                            
                             <div class="form-group">
                                 <button id="register" onclick="register()" class="btn btn-danger btn-lg btn-block">Sign Up</button>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <h6 class="text-center"><a href="">Privacy is important to us. Click here to read why.</a></h6>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="invitemodal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="inviteModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                        <h2 class="text-center"><img src="assets/img/earth.png" class="img-circle img-modal"><br>Invite </h2>
+                    </div>
+                    <div class="modal-body row">
+                        <form class="col-md-10 col-md-offset-1 col-xs-12 col-xs-offset-0">
+                            <div class="form-group">
+                                <input id="uname" type="email" class="form-control input-lg" placeholder="friend@example.com">
+                            </div>
+
+                            <div class="form-group">
+                                <button id="login" onclick="invite()" class="btn btn-danger btn-lg btn-block"><i class="fa fa-send-o fa-lg"> Invite</i></button>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <h6 class="text-center"><a href="">Privacy is important to us. Click here to read why.</a></h6>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div id="contactmodal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="ContactModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                        <h2 class="text-center"><img src="assets/img/earth.png" class="img-modal"><br>Contact us</h2>
+                    </div>
+                    <div class="modal-body row">
+                        <h6 class="text-center">Send us a message</h6>
+                        <form class="col-md-10 col-md-offset-1 col-xs-12 col-xs-offset-0">
+                            <div class="form-group">
+                                <input id="email" type="email" class="form-control input-lg" placeholder="donald.trump@usa.net">
+                            </div>
+                            <div class="form-group">
+                                <input id="fullname" type="text" class="form-control input-lg" placeholder="Donald Trump">
+                            </div>
+                            <div class="form-group">
+                                <textarea class="form-control" id="exampleTextarea" rows="3" placeholder="enter your message here"></textarea>
+                            </div>                          
+                            <div class="form-group">
+                                <button id="register" onclick="conatct()" class="btn btn-danger btn-lg btn-block"><i class="fa fa-send-o fa-lg"> Send Message</i></button>
                             </div>
                         </form>
                     </div>

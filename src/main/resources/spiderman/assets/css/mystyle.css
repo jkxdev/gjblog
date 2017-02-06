@@ -76,6 +76,7 @@ a:hover {
 .navbar-trans a{
     color:#cdcdcd;
     letter-spacing:1px;
+    font-size: 16px;
 }
 
 .navbar-trans .form-control:focus {

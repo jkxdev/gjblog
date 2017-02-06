@@ -1,4 +1,4 @@
-package com.cmad.cmad.auth;
+package com.cmad.auth;
 
 import javax.crypto.KeyGenerator;
 import javax.crypto.SecretKey;

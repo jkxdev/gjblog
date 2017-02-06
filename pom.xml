@@ -2,7 +2,7 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.cmad</groupId>
-	<artifactId>cmad</artifactId>
+	<artifactId>geejay</artifactId>
 	<version>1.0.0</version>
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -10,7 +10,7 @@
 		<junit.version>4.12</junit.version>
 	</properties>
 	<packaging>jar</packaging>
-	<name>Rendezvous Template</name>
+	<name>GJGK</name>
 	<description>GJ blog application</description>
 	<organization>
 		<name>Glarimy Technology Services</name>
@@ -41,6 +41,12 @@
 			<groupId>io.vertx</groupId>
 			<artifactId>vertx-web</artifactId>
 			<version>3.3.3</version>
+		</dependency>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>4.12</version>
+			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.mongodb</groupId>
@@ -79,7 +85,7 @@
 									implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
 									<manifestEntries>
 										<Main-Class>io.vertx.core.Launcher</Main-Class>
-										<Main-Verticle>com.cmad.cmad.service.MainVerticle</Main-Verticle>
+										<Main-Verticle>com.cmad.service.MainVerticle</Main-Verticle>
 									</manifestEntries>
 								</transformer>
 							</transformers>

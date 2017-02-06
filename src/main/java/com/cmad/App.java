@@ -1,4 +1,4 @@
-package com.cmad.cmad;
+package com.cmad;
 
 /**
  * Hello world!

@@ -1,4 +1,4 @@
-package com.cmad.cmad.model.dto;
+package com.cmad.model.dto;
 
 public class LoginDTO {
 

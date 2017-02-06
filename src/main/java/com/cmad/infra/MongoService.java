@@ -1,4 +1,4 @@
-package com.cmad.cmad.infra;
+package com.cmad.infra;
 
 import org.mongodb.morphia.Datastore;
 import org.mongodb.morphia.Morphia;
