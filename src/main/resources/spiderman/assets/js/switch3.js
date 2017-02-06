@@ -1,7 +1,8 @@
 $(document).ready(function() {
-	$("#header").load("header.html"); 
+	$("#header").load("header.html",function() {
+	    load_profile();
+	});
 	$("#footer").load("footer.html"); 
-
 
 	$("#section-blog").hide();
 	$("#section-list").hide();
@@ -11,7 +12,6 @@ $(document).ready(function() {
 	
 	console.log("session logged in status " + getlogin_session());
 	
-//	load_profile();
 });
 
 function setlogin_session(stringvar){ 
