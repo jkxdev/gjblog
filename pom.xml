@@ -4,14 +4,11 @@
 	<groupId>com.cmad</groupId>
 	<artifactId>geejay</artifactId>
 	<version>1.0.0</version>
-	<properties>
-		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<java.version>1.8</java.version>
-		<junit.version>4.12</junit.version>
-	</properties>
+	
 	<packaging>jar</packaging>
 	<name>GJGK</name>
 	<description>GJ blog application</description>
+	<url>http://maven.apache.org</url>
 	<organization>
 		<name>Glarimy Technology Services</name>
 		<url>www.glarimy.com</url>

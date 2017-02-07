@@ -1,13 +1,13 @@
 package com.cmad.service;
 
-import com.mongodb.util.JSON;
+
+import com.cmad.auth.authData;
 
 import io.vertx.core.AbstractVerticle;
 import io.vertx.core.DeploymentOptions;
 import io.vertx.core.Future;
 import io.vertx.core.Vertx;
 import io.vertx.core.http.HttpServerResponse;
-import io.vertx.core.json.Json;
 import io.vertx.ext.web.Router;
 import io.vertx.ext.web.handler.BodyHandler;
 import io.vertx.ext.web.handler.StaticHandler;
@@ -82,6 +82,19 @@ public class MainVerticle extends AbstractVerticle {
 	public static void main(String[] args) {
 
 		System.out.println("starting...from main");
+		
+		authData joken = new authData();
+		
+		joken.setName("josie");
+		joken.makeLongUserJoken();
+		joken.validate();
+		
+		
+		
+		
+		
+		
+		
 		Vertx vertx = Vertx.vertx();
 		router = Router.router(vertx);
 		vertx.deployVerticle(RegistrationVerticle.class.getName(), new DeploymentOptions().setWorker(true));
@@ -106,11 +119,26 @@ public class MainVerticle extends AbstractVerticle {
 		router.route("/api/login").handler(BodyHandler.create());
 		router.post("/api/login").handler(rctx -> {
 			vertx.eventBus().send("com.cisco.cmad.projects.login", rctx.getBodyAsJson(), r -> {
-				System.out.println("MainVerticle.start() message " + r.result().body().toString());
-				rctx.response().setStatusCode(200).end(r.result().body().toString());
-				// rctx.response().setStatusCode(200).end(Json.encodePrettily(obj));
+				if (r.result() != null) {
+					System.out.println("MainVerticle.start() login response " + r.result().body().toString());
+					rctx.response().setStatusCode(200).end(r.result().body().toString());
+				}
+				else {
+					System.out.println("MainVerticle.start() login response " + r.cause().getMessage());
+					rctx.response().setStatusCode(404).end(r.cause().getMessage());
+				}
 			});
 		});
+		router.route("/api/validate").handler(BodyHandler.create());
+		router.post("/api/validate").handler(rctx -> {
+			vertx.eventBus().send("com.cisco.cmad.projects.validateUser", rctx.getBodyAsJson(), r -> {
+				System.out.println("MainVerticle.start() validateUser respoonse " + r.result().body().toString());
+				
+				rctx.response().setStatusCode(200).end(r.result().body().toString());
+				// rctx.response().setStatusCode(200).end(Json.encodePrettily(obj));
+
+		});
+	});
 		vertx.createHttpServer().requestHandler(router::accept).listen(8080);
 		// ,
 		// result -> {
@@ -143,8 +171,10 @@ public class MainVerticle extends AbstractVerticle {
 					// System.out.println("MainVerticle.setRegistrationHandler() register
 					// r.result().body().toString()
 					// "+r.result().body().toString());
+					System.out.println("MainVerticle.setRegistrationHandler() result is :" + r.result().body().toString() );
 					rctx.response().setStatusCode(200).end(r.result().body().toString());
 				} else {
+					System.out.println("MainVerticle.setRegistrationHandler() result is :" + r.result().body().toString() );
 					rctx.response().setStatusCode(404).end(r.cause().getMessage());
 				}
 			});

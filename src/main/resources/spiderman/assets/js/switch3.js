@@ -10,72 +10,110 @@ $(document).ready(function() {
 	
 	console.log("document .ready loaded the contents and hid the divs");
 	
-	console.log("session logged in status " + getlogin_session());
+	console.log("session logged in status " + isValidLogin());
 	
 });
 
-function setlogin_session(stringvar){ 
-	
+function setlogin_session(ssnData){ 
 	// Check browser support
 	if (typeof(Storage) !== "undefined") {
 	    // Store
-	    localStorage.setItem("loggedin", stringvar);
+		localStorage.setItem("id", ssnData.name);
+		localStorage.setItem("tok", ssnData.tok);
+		console.log("login session stored for \""+ ssnData.name + "\"");
 	} else {
 		alert ("error:Sorry, your browser does not support Web Storage...");
 	}
 }
 
 function getlogin_session() {
-	return localStorage.getItem("loggedin");
+	return {id:localStorage.getItem("id"),
+			tok:localStorage.getItem("tok")};
+}
+
+function clearlogin_session() {
+	// Check browser support
+	if (typeof(Storage) !== "undefined") {
+	    // Store
+		localStorage.removeItem("id"); 
+		localStorage.removeItem("tok");
+		console.log("login session cleared");
+	} else {
+		alert ("error:Sorry, your browser does not support Web Storage...");
+	}
+}
+
+function isValidLogin() {
+	/*should change this to the server query to validate the token later*/
+//	if("id" in localStorage){
+	console.log(localStorage.getItem("id"));
+	if((null != localStorage.getItem("tok")) && ("undefined" != localStorage.getItem("tok")) &&
+	   (null != localStorage.getItem("id")) && ("undefined" != localStorage.getItem("id"))){
+		console.log("isvalid login : TRUE");
+		return true;
+	}
+	else {
+		console.log("isvalid login : FALSE");
+		return false;
+	}
+}
+
+function getpass(str){
+	var stringpass= 'pwd' + CryptoJS.SHA256(str);
+	console.log("passed : " + str + ", Returned : " + stringpass);
+	return stringpass;
+}
+
+function get_loginData() {
+	return JSON.stringify({username:$('#uname').val(),
+		 pwd: getpass($('#logpwd').val())
+		 });
 }
 
 function profile_login() {
     $.ajax({
       type : 'post',
       url : 'http://localhost:8080/api/login/',
-      data: '{"username": "' + $('#uname').val() + '","pwd":"' + CryptoJS.SHA256($('#pwd').val()) + '"}',
+      data: get_loginData(),
       contentType: "application/json;charset=utf-8",
-      success : function(response) {
-        //alert( "Data Loaded: " + response );
-//        $("#section_blog_post").show();
-//        $('#section_blog_post [id^="section"]').hide();
-        //window.location="home.html";
-  		console.log("setting loggedin" + loggedin);
-    	setlogin_session("true");
+      dataType: 'json',
+      success : function(output, status, response) {
+    	var resp = JSON.parse(response.responseText);
+    	console.log("setting loggedin : " + resp);
+    	setlogin_session(resp);
     	load_profile();
 		show_latest();
       },
-      error: function(response){
-    	  setlogin_session("true"); //REMOVE
-        //alert ("error " + response.responseText );
-        load_profile();
+      error: function(response, ajaxOptions, thrownError){
+        alert ("Username of password invalid");
       }
     });
 //    e.preventDefault();
 }
+function get_registerData() {
+	return JSON.stringify(
+		{fullName: $('#fullname').val(),
+		 pwd: getpass($('#regpwd').val()),
+		 username:$('#email').val(),
+		 phno:$('#phno').val()
+		 });
+}
+
 function profile_register() {
-	var badadata = '{"fullName": "' + $('#fullname').val() + 
-      '","pwd":"' +$('#pwd').val() + 
-      '","username":"' +$('#email').val() +
-      '","phno":"' +$('#phno').val() +
-      '"}';
+	var badadata = get_registerData();
 	console.log(badadata);
     $.ajax({
       type : 'post',
       url : 'http://localhost:8080/api/user/registeration/',
       data: badadata,
       contentType: "application/json;charset=utf-8",
-      success : function(response) {
-        //alert( "Data Loaded: " + response );
-        $("#section_blog_post").show();
-        $('#section_blog_post [id^="section"]').hide();
-        //window.location="home.html";
+      success : function(output, status, response) {
+    	  var resp = JSON.parse(response.responseText);
+          alert( "Data Loaded: " + resp);
+        
       },
-	error : function(xhr, ajaxOptions, thrownError) {
-		alert(xhr.responseText);
-//		alert(xhr.status+);
-//		alert(thrownError);
-//		window.location="home.html";
+	error : function(response, ajaxOptions, thrownError) {
+		alert(response.responseText);
       }
     });
 }
@@ -92,23 +130,25 @@ function profile_logout(){
 	setlogin_session("false");
 }
 function load_profile(){
-	if('true' == getlogin_session()) {
+	if(true == isValidLogin()) {
 		console.log("Logged in: loading profile");
 		$("#profile-drop").empty();
 		$("#profile-drop").append('<li><a id="s-new" onclick="update_user()"><span class="glyphicon glyphicon-pencil"></span> Update User</a></li>');
 		$("#profile-drop").append('<li><a id="s-list" onclick="show_list()">Recent Blogs</a></li>');
 		$("#profile-drop").append('<li id="in-out"><a onclick="profile_logout()"><span class="glyphicon glyphicon-log-out"></span>&nbsp; &nbsp; Logout</span></a></li>');
-		$("#loginstat").text('Josie');
+		$("#loginstat").text(getlogin_session().id);
 		$("#loginstat").prepend('<i class="fa fa-user fa-lg"></i> &nbsp;');
 		$("#loginstat").append('<span class="caret"></span>');
 		console.log("loading profile complete");
-//		sleep(4000);
-//		console.log("sleep over");
+	}
+	else {
+		console.log("load_profile: session invalid");
 	}
 }
 
 function unload_profile() {
 	console.log("Unloading profile");
+	clearlogin_session();
 	$("#profile-drop").empty();
 	$("#profile-drop").append('<li id="in-out"><a href="#" data-toggle="modal" data-target="#loginModal"><span class="glyphicon glyphicon-user"></span>&nbsp; &nbsp; Login</span></a></li>');
 	$("#loginstat").text('');

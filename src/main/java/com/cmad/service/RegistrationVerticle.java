@@ -30,27 +30,27 @@ public class RegistrationVerticle extends AbstractVerticle {
 			Datastore dataStore = MongoService.getDataStore();
 			
 			//None of the fields should be empty
-			if(regData.getFullName() == null || regData.getFullName() == "")	{
-				System.out.println("RegistrationVerticle.handleRegistraion() full name validation failed");
-				message.fail(404, "1. FullName can't be empty");
-				return;
-			} else if(regData.getUsername() == null || regData.getUsername() == "")	{
-				System.out.println("RegistrationVerticle.handleRegistraion() user name validation failed");
-				message.fail(404, "2. User name can't be empty");
-				return;
-			} else if(regData.getPwd() == null || regData.getPwd() == "")	{
-				System.out.println("RegistrationVerticle.handleRegistraion() pwd validation failed");
-				message.fail(404, "3. Password can't be empty");
-				return;
-			} else if(regData.getPhno() == null || regData.getPhno() == "")	{
-				System.out.println("RegistrationVerticle.handleRegistraion() ph. no. validation failed");
-				message.fail(404, "4. Phone no. can't be empty");
-				return;
-			} else if(regData.getAreaofinterest() == null || regData.getAreaofinterest() == "")	{
-				System.out.println("RegistrationVerticle.handleRegistraion() area of interest validation failed");
-				message.fail(404, "5. Areaofinterest can't be empty");
-				return;
-			}
+//			if(regData.getFullName() == null || regData.getFullName() == "")	{
+//				System.out.println("RegistrationVerticle.handleRegistraion() full name validation failed");
+//				message.fail(404, "1. FullName can't be empty");
+//				return;
+//			} else if(regData.getUsername() == null || regData.getUsername() == "")	{
+//				System.out.println("RegistrationVerticle.handleRegistraion() user name validation failed");
+//				message.fail(404, "2. User name can't be empty");
+//				return;
+//			} else if(regData.getPwd() == null || regData.getPwd() == "")	{
+//				System.out.println("RegistrationVerticle.handleRegistraion() pwd validation failed");
+//				message.fail(404, "3. Password can't be empty");
+//				return;
+//			} else if(regData.getPhno() == null || regData.getPhno() == "")	{
+//				System.out.println("RegistrationVerticle.handleRegistraion() ph. no. validation failed");
+//				message.fail(404, "4. Phone no. can't be empty");
+//				return;
+//			} else if(regData.getAreaofinterest() == null || regData.getAreaofinterest() == "")	{
+//				System.out.println("RegistrationVerticle.handleRegistraion() area of interest validation failed");
+//				message.fail(404, "5. Areaofinterest can't be empty");
+//				return;
+//			}
 
 			
 			//Validating if similar user already exists
