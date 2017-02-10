@@ -59,9 +59,9 @@ public class BlogVerticle  extends AbstractVerticle {
 			MongoService.close();
 			System.out.println("BlogVerticle.handleNewBlogCreation() blog = "+blog);
 			System.out.println("BlogVerticle.handleNewBlogCreation() blog class = "+blog.getClass());
-			if(blog == null){
+			if(blog == null) {
 				message.fail(404, "X. No Blog created");
-			}else{
+			} else{
 				message.reply(Json.encodePrettily(blog));
 			}
 		});

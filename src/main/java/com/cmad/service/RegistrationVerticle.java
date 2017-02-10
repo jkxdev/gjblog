@@ -6,7 +6,6 @@ import org.mongodb.morphia.query.Query;
 import org.mongodb.morphia.query.UpdateOperations;
 import org.mongodb.morphia.query.UpdateResults;
 
-import com.cmad.auth.TokenValidator;
 import com.cmad.infra.MongoService;
 import com.cmad.model.UserDetail;
 
@@ -35,12 +34,12 @@ public class RegistrationVerticle extends AbstractVerticle {
 			Datastore dataStore = MongoService.getDataStore();
 			
 			//Performing user name validations
-			if(!performUserNameValidation(message, userDetail, dataStore))
-				return;
+//			if(!performUserNameValidation(message, userDetail, dataStore))
+//				return;
 			
 			//Performing other validations
-			if(!performCommonValidations(message, userDetail))
-				return;
+//			if(!performCommonValidations(message, userDetail))
+//				return;
 			
 			BasicDAO<UserDetail, String> dao = new BasicDAO<>(UserDetail.class, dataStore);
 //			dao.save(userDetail);
@@ -73,8 +72,8 @@ public class RegistrationVerticle extends AbstractVerticle {
 				return;
 			}
 			
-			if(!TokenValidator.isValidToken(message, userDetail.getId(), userDetail.getToken(), dataStore))
-				return;
+//			if(!TokenValidator.isValidToken(message, userDetail.getId(), userDetail.getToken(), dataStore))
+//				return;
 			
 			//Performing other validations
 			if(!performCommonValidations(message, userDetail))

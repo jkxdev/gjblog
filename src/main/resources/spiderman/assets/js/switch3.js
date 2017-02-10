@@ -69,26 +69,20 @@ function get_loginData() {
 		 pwd: getpass($('#logpwd').val())
 		 });
 }
-
 function profile_login() {
-    $.ajax({
-      type : 'post',
-      url : 'http://localhost:8080/api/login/',
-      data: get_loginData(),
-      contentType: "application/json;charset=utf-8",
-      dataType: 'json',
-      success : function(output, status, response) {
-    	var resp = JSON.parse(response.responseText);
-    	console.log("setting loggedin : " + resp);
-    	setlogin_session(resp);
-    	load_profile();
-		show_latest();
-      },
-      error: function(response, ajaxOptions, thrownError){
-        alert ("Username of password invalid");
-      }
-    });
-//    e.preventDefault();
+	$.post('http://localhost:8080/api/user/login',get_loginData())
+	.done(function(data){
+		console.log("success" + data);
+		var resp = window.atob(data);
+		console.log("decoded : " + resp);
+		setlogin_session(JSON.parse(resp));
+		$('#loginModal').modal('toggle');
+		load_profile();
+	}) 
+	.fail(function(data){
+		alert("Error" + data);
+	});
+	
 }
 function get_registerData() {
 	return JSON.stringify(
@@ -109,13 +103,13 @@ function profile_register() {
       contentType: "application/json;charset=utf-8",
       success : function(output, status, response) {
     	  var resp = JSON.parse(response.responseText);
-          alert( "Data Loaded: " + resp);
-        
+          alert( "Data Loaded: " + resp);   
       },
 	error : function(response, ajaxOptions, thrownError) {
 		alert(response.responseText);
       }
     });
+    return false;
 }
 
 function sleep(miliseconds) {
@@ -140,6 +134,7 @@ function load_profile(){
 		$("#loginstat").prepend('<i class="fa fa-user fa-lg"></i> &nbsp;');
 		$("#loginstat").append('<span class="caret"></span>');
 		console.log("loading profile complete");
+		show_latest();
 	}
 	else {
 		console.log("load_profile: session invalid");
@@ -167,6 +162,8 @@ function show_list() {
 
 function show_latest() {
 	console.log("s-latest is clicked");
+	get_recent_blog();
+	
 	$("#section-list").empty();
 	$("#section-form").empty();
 	$("#section-update-user").empty();
@@ -174,6 +171,38 @@ function show_latest() {
 	$('[id^="section"]').hide();
 	$("#section-blog").show();
 }
+
+
+function fill_blog(resp) {
+	var rec_blog = null;
+	try{
+		var rec_blog = JSON.parse(resp);
+		console.log("rec blog: " + rec_blog);
+	}catch(e) {
+		rec_blog = { blogTitle:'No recent Blogs',
+				blogContent: 'There is no latest blog in your favourite list'};		
+	}
+	//addd header
+	$("#blog-title").text(rec_blog.blogTitle);
+	$("#blog-author").text(rec_blog.blogAuthorUsername);
+	var timestamp = parseInt(rec_blog.blogTimestamp);
+	var d = new Date();
+	d.setTime(timestamp);
+	
+	$("#blog-posted").text("Posted on " +  d.toString());
+	$("#blog-posted").prepend("<span class=\"glyphicon glyphicon-time\"></span>");
+	var bodydata = rec_blog.blogContent.split("\n");
+	if(bodydata.length > 0 ) {
+		$("#section-blog-content").empty();
+		console.log("length : "+ bodydata.length);
+		bodydata.forEach(function(item, index){
+		//add the para div
+			console.log("[para] : " + item);
+			$("#section-blog-content").append("<p " + ((index == 0)?" class=\"lead\" ":"") + ">" + item + "</p>");
+		});
+	}	
+}
+
 function show_form() {
 	console.log("section-form is clicked");
 	$("#section-list").empty();
@@ -181,7 +210,9 @@ function show_form() {
 	$("#section-update-user").empty();
 	$("#section-form").load("new-post.html");
 	$('[id^="section"]').hide();
-	$("#section-form").show();
+	$("#section-form").show("fast",function(){
+		$('#blog-tags').tagsinput();
+	});
 }
 function update_user() {
 	console.log("update-user is clicked");

@@ -1,9 +1,9 @@
 package com.cmad.service;
 
+import java.util.Base64;
 import java.util.Iterator;
 
-import com.cmad.auth.TokenValidator;
-import com.cmad.infra.MongoService;
+import com.cmad.auth.AuthData;
 
 import io.vertx.core.AbstractVerticle;
 import io.vertx.core.DeploymentOptions;
@@ -12,6 +12,7 @@ import io.vertx.core.MultiMap;
 import io.vertx.core.Vertx;
 import io.vertx.core.http.HttpServerRequest;
 import io.vertx.core.http.HttpServerResponse;
+import io.vertx.core.json.JsonObject;
 import io.vertx.ext.web.Router;
 import io.vertx.ext.web.RoutingContext;
 import io.vertx.ext.web.handler.BodyHandler;
@@ -23,69 +24,7 @@ public class MainVerticle extends AbstractVerticle {
 
 	public void start(Future<Void> future) throws Exception {
 		startServer("start()");
-		/*
-
-
-		System.out.println("starting...");
-//		Vertx vertx = Vertx.vertx();
-		Router router = Router.router(vertx);
-		vertx.deployVerticle(LoginVerticle.class.getName(), new DeploymentOptions().setWorker(true));
-		vertx.deployVerticle(RegistrationVerticle.class.getName(), new DeploymentOptions().setWorker(true));
-	//------------------------------------------//	
-		router.route("/about").handler(rctx -> {
-			HttpServerResponse response = rctx.response();
-			response.putHeader("content-type", "text/html")
-					.end("<h1>Hello from my first Vert.x 3 application via routers</h1>");
-		});
-	//------------------------------------------//	
-		router.route("/*").handler(StaticHandler.create("spiderman"));
-		//router.route("/static/*").handler(StaticHandler.create("web"));
-	//------------------------------------------//	
-		router.route(Paths.P_REGISTRATION).handler(BodyHandler.create());
-		router.post(Paths.P_REGISTRATION).handler(rctx -> {
-			System.out.println("MainVerticle.start() inside register ");
-			String name = rctx.request().getParam("fullName");
-			String pwd= rctx.request().getParam("pwd");
-			String areaofinterest= rctx.request().getParam("areaofinterest");
-			System.out.println("MainVerticle.start() name "+name);
-			System.out.println("MainVerticle.start() pwd "+pwd);
-			System.out.println("MainVerticle.start() areaofinterest "+areaofinterest);
-			vertx.eventBus().send(Topics.REGISTRATION, rctx.getBodyAsJson(), r -> {
-				System.out.println("MainVerticle.start() register r "+r);
-				System.out.println("MainVerticle.start() register r.result() "+r.result());
-				if(r.result() != null)	{
-					System.out.println("MainVerticle.start() register r.result().body() "+r.result().body());
-					System.out.println("MainVerticle.start() register r.result().body().toString() "+r.result().body().toString());
-					rctx.response().setStatusCode(200).end(r.result().body().toString());
-				}	else	{
-					rctx.response().setStatusCode(404).end("No user created");
-				}
-			});
-			rctx.response().setStatusCode(200).putHeader("content-type", "application/json; charset=utf-8")
-					.end();
-		});
-	//------------------------------------------//	
-		router.route("/api/login").handler(BodyHandler.create());
-		router.post("/api/login").handler(rctx -> {
-			vertx.eventBus().send("com.cisco.cmad.projects.login", rctx.getBodyAsJson(), r -> {
-				System.out.println("MainVerticle.start() message "+r.result().body().toString());
-				rctx.response().setStatusCode(200).end(r.result().body().toString());
-//				rctx.response().setStatusCode(200).end(Json.encodePrettily(obj));
-			});
-		});
-		vertx.createHttpServer().requestHandler(router::accept).listen(8080);
-//		,
-//				result -> {
-//					if (result.succeeded()) {
-////						future.complete();
-//					} else {
-////						future.fail(result.cause());
-//					}
-//				});
-	//
-
-	*/}
-
+	}
 	private static void startServer(String str)	{
 		System.out.println("starting...from "+str);
 		Vertx vertx = Vertx.vertx();
@@ -118,18 +57,12 @@ public class MainVerticle extends AbstractVerticle {
 		setRecentBlogFetchHandler(vertx);
 		
 		setBlogFetchHandler(vertx);		
+		
+		setValidateHandler(vertx);
 		// ------------------------------------------//
 
 		vertx.createHttpServer().requestHandler(router::accept).listen(8080);
-		// ,
-		// result -> {
-		// if (result.succeeded()) {
-		//// future.complete();
-		// } else {
-		//// future.fail(result.cause());
-		// }
-		// });
-		//		
+	
 	}
 	
 	public static void main(String[] args) {
@@ -142,7 +75,7 @@ public class MainVerticle extends AbstractVerticle {
 	private static void setLoginHandler(Vertx vertx) {
 		router.route(Paths.P_LOGIN).handler(BodyHandler.create());
 		router.post(Paths.P_LOGIN).handler(rctx -> {
-System.out.println("MainVerticle.setLoginHandler() got request");			
+			System.out.println("MainVerticle.setLoginHandler() got request");			
 			printHTTPServerRequest(rctx);
 
 			vertx.eventBus().send(Topics.LOGIN, rctx.getBodyAsJson(), r -> {
@@ -150,13 +83,27 @@ System.out.println("MainVerticle.setLoginHandler() got request");
 				System.out.println("MainVerticle.setLoginHandler() r.result() " + r.result());
 
 				if (r.result() != null) {
-					System.out.println("MainVerticle.setLoginHandler() r.result().body() " + r.result().body());
-					System.out.println("MainVerticle.setLoginHandler() r.result().body().toString() " + r.result().body().toString());
-
-					rctx.response().setStatusCode(200).end(r.result().body().toString());
+					//encode the json - to do btoa here and in javascript will do atob...
+					//making sure that the unprintable chars are not causing any json parse error
+					String resp_string =  new String(Base64.getEncoder().encode(r.result().body().toString().getBytes()));
+					System.out.println("[200]  MainVerticle.setLoginHandler() r.result().body() " + resp_string);
+					rctx.response().setStatusCode(200).end(resp_string);
 				} else {
+					System.out.println("Line no :88 MainVerticle.setLoginHandler() login response " + r.cause().getMessage());
 					rctx.response().setStatusCode(404).end(r.cause().getMessage());
 				}				
+			});
+		});
+	}
+	private static void setValidateHandler(Vertx vertx) {
+		router.route("/api/validate").handler(BodyHandler.create());
+		router.post("/api/validate").handler(rctx -> {
+			vertx.eventBus().send("com.cisco.cmad.projects.validateUser", rctx.getBodyAsJson(), r -> {
+				System.out.println("MainVerticle.start() validateUser respoonse " + r.result().body().toString());
+				
+				rctx.response().setStatusCode(200).end(r.result().body().toString());
+				// rctx.response().setStatusCode(200).end(Json.encodePrettily(obj));
+
 			});
 		});
 	}
@@ -188,8 +135,10 @@ System.out.println("MainVerticle.setLoginHandler() got request");
 
 			vertx.eventBus().send(Topics.REGISTRATION, rctx.getBodyAsJson(), r -> {
 				if (r.result() != null) {
+					System.out.println("MainVerticle.setRegistrationHandler() result is :" + r.result().body().toString() );
 					rctx.response().setStatusCode(200).end(r.result().body().toString());
 				} else {
+					System.out.println("MainVerticle.setRegistrationHandler() result is :" + r.result().body().toString() );
 					rctx.response().setStatusCode(404).end(r.cause().getMessage());
 				}
 			});
@@ -217,26 +166,32 @@ System.out.println("MainVerticle.setLoginHandler() got request");
 			});
 		});
 	}
+//	private static JsonObject setHeader(RoutingContext rctx) {
+//		AuthData authData = new AuthData(rctx.request().getHeader("id"));
+//		authData.setTok(rctx.request().getHeader("tok"));
+//		JsonObject config = new JsonObject().put("auth", new JsonObject(authData.toString()))
+//			    							.put("body", rctx.getBodyAsJson());
+//		return config;
+//	}
+	
 	
 	private static void setBlogCreateHandler(Vertx vertx) {
 		router.route(Paths.P_CREATE_NEW_BLOG).handler(BodyHandler.create());
 		router.post(Paths.P_CREATE_NEW_BLOG).handler(rctx -> {
-
-			System.out.println("MainVerticle.setBlogCreateHandler() Got request");			
-//			printHTTPServerRequest(rctx);
-
-			if(!validateToken(rctx))	{
-				rctx.response().setStatusCode(404).end("Token authentication failed for Blog creation please Re-login");
-				return;
+			System.out.println("MainVerticle.setBlogCreateHandler() Got request");		
+			printHTTPServerRequest(rctx);
+			if(true == validateToken(rctx)){
+				vertx.eventBus().send(Topics.CREATE_NEW_BLOG, rctx.getBodyAsJson(), r -> {
+					if (r.result() != null) {
+						rctx.response().setStatusCode(200).end(r.result().body().toString());
+					} else {
+						rctx.response().setStatusCode(404).end(r.cause().getMessage());
+					}
+				});
 			}
-
-			vertx.eventBus().send(Topics.CREATE_NEW_BLOG, rctx.getBodyAsJson(), r -> {
-				if (r.result() != null) {
-					rctx.response().setStatusCode(200).end(r.result().body().toString());
-				} else {
-					rctx.response().setStatusCode(404).end(r.cause().getMessage());
-				}
-			});
+			else {
+				rctx.response().setStatusCode(404).end("Token authentication failed for Profile update please Re-login");
+			}
 		});
 	}
 
@@ -277,16 +232,9 @@ System.out.println("MainVerticle.setLoginHandler() got request");
 	private static boolean validateToken(RoutingContext rctx)	{
 		boolean isValid = false;
 
-		HttpServerRequest httpServerRequest = rctx.request();
-		MultiMap headers = httpServerRequest.headers();
-		if(headers != null)	{
-			String id = headers.get("id");
-			String token = headers.get("token");
-			System.out.println("MainVerticle.validateToken() id = "+id);
-			System.out.println("MainVerticle.validateToken() token = "+token);
-			if(TokenValidator.isValidToken(id, token, MongoService.getDataStore()))
-				isValid = true;
-		}
+		AuthData authData = new AuthData(rctx.request().getHeader("id"));
+		authData.setTok(rctx.request().getHeader("tok"));
+		isValid = authData.validate();
 		System.out.println("MainVerticle.validateToken() isValid = "+isValid);
 		return isValid;
 	}
