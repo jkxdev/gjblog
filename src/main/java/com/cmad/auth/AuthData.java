@@ -1,19 +1,18 @@
 package com.cmad.auth;
 
 import java.security.Key;
-import java.security.NoSuchAlgorithmException;
-import java.util.Base64;
 import java.util.Date;
 
-import javax.crypto.KeyGenerator;
-import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
 import javax.xml.bind.DatatypeConverter;
 
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.JwtBuilder;
 import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.SignatureException;
 
 public class AuthData {
 	private String name;
@@ -104,13 +103,22 @@ public class AuthData {
 	private Claims getJokenClaims(String jwt) {
 	 
 	    //This line will throw an exception if it is not a signed JWS (as expected)
-	    Claims claims = Jwts.parser()         
-	       .setSigningKey(DatatypeConverter.parseBase64Binary(keyset.getSecret()))
-	       .parseClaimsJws(jwt).getBody();
-	    System.out.println("ID: " + claims.getId());
-	    System.out.println("Subject: " + claims.getSubject());
-	    System.out.println("Issuer: " + claims.getIssuer());
-	    System.out.println("Expiration: " + claims.getExpiration());
+	    Claims claims = null;
+	    try{
+	    	claims = Jwts.parser()
+		       .setSigningKey(DatatypeConverter.parseBase64Binary(keyset.getSecret()))
+		       .parseClaimsJws(jwt).getBody();
+		    System.out.println("ID: " + claims.getId());
+		    System.out.println("Subject: " + claims.getSubject());
+		    System.out.println("Issuer: " + claims.getIssuer());
+		    System.out.println("Expiration: " + claims.getExpiration());
+	    }catch (MalformedJwtException e) {
+	    	//do nothing
+	    }catch(SignatureException e){
+	    	//do nothing
+	    }catch(ExpiredJwtException e){
+	    	//do nothing
+	    }
 	    return claims;
 	}
 	

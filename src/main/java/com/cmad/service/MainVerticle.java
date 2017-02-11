@@ -12,7 +12,6 @@ import io.vertx.core.MultiMap;
 import io.vertx.core.Vertx;
 import io.vertx.core.http.HttpServerRequest;
 import io.vertx.core.http.HttpServerResponse;
-import io.vertx.core.json.JsonObject;
 import io.vertx.ext.web.Router;
 import io.vertx.ext.web.RoutingContext;
 import io.vertx.ext.web.handler.BodyHandler;
@@ -190,7 +189,8 @@ public class MainVerticle extends AbstractVerticle {
 				});
 			}
 			else {
-				rctx.response().setStatusCode(404).end("Token authentication failed for Profile update please Re-login");
+				rctx.response().putHeader("userstat","not_logged_in");
+				rctx.response().setStatusCode(401).end("Token authentication failed for Profile update please Re-login");
 			}
 		});
 	}

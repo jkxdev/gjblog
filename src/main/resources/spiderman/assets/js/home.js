@@ -36,7 +36,7 @@ function save_blog() {
 		url : 'http://localhost:8080/api/blog/',
 		data: get_blogform_data(),
 		headers: {"id":localStorage.getItem("id"),
-					"tok":localStorage.getItem("tok")},
+				  "tok":localStorage.getItem("tok")},
 		contentType: "application/json;charset=utf-8",
 
 		success: function(output, status, xhr) {
@@ -47,6 +47,12 @@ function save_blog() {
 		},
 		error : function(xhr, ajaxOptions, thrownError) {
 			alert(xhr.responseText);
+			if(401 == xhr.status) {
+				if("not_logged_in" == xhr.getResponseHeader('userstat')) {
+					relogin();
+				}
+				
+			}
 		}
 	});
 }

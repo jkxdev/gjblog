@@ -25,7 +25,10 @@ function setlogin_session(ssnData){
 		alert ("error:Sorry, your browser does not support Web Storage...");
 	}
 }
-
+function relogin() {
+	unload_profile();
+	$('#loginModal').modal('toggle');
+}
 function getlogin_session() {
 	return {id:localStorage.getItem("id"),
 			tok:localStorage.getItem("tok")};
