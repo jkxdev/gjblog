@@ -3,8 +3,8 @@ function get_recent_blog() {
 		type : 'post',
 		url : 'http://localhost:8080/api/blog/recent',
 		headers: {
-			"id":localStorage.getItem("ls-id"),
-			"token":localStorage.getItem("ls-token")
+			"id":localStorage.getItem("id"),
+			"tok":localStorage.getItem("tok")
 		},
 		contentType: "application/json;charset=utf-8",
 		success: function(output, status, xhr) {
@@ -14,7 +14,12 @@ function get_recent_blog() {
 		},
 		error : function(xhr, ajaxOptions, thrownError) {
 			console.log("error in the respomse : "+ xhr.responseText);
-			alert(xhr.responseText);
+			if(401 == xhr.status) {
+				if("not_logged_in" == xhr.getResponseHeader('userstat')) {
+					relogin();
+				}
+				
+			}
 		}
 	});
 }
@@ -56,7 +61,45 @@ function save_blog() {
 		}
 	});
 }
+
+function fav_blogs() {
+	console.log("fav_blogs called");
+	$.getJSON( "http://localhost:8080/api/blog/favorites/", function( data ) {
+		console.log( "output: " +data);
+	}).fail(function(jqXHR) {
+		alert(jqXHR.responseText);
+		if(401 == jqXHR.status) {
+			if("not_logged_in" == jqXHR.getResponseHeader('userstat')) {
+				relogin();
+			}
+		}
+	});
 	
+//	$.ajax({
+//		type : 'get',
+//		url : 'http://localhost:8080/api/blog/favorites/',
+//		headers: {"id":localStorage.getItem("id"),
+//				  "tok":localStorage.getItem("tok")},
+//		contentType: "application/json;charset=utf-8",
+//
+//		success: function(output, status, xhr) {
+//			console.log( "output: " +output);
+//			console.log( "status:" +status);
+//			console.log( "xhr.responseText: " + xhr.responseText);
+//			//window.location="home.html";
+//		},
+//		error : function(xhr, ajaxOptions, thrownError) {
+//			alert(xhr.responseText);
+//			if(401 == xhr.status) {
+//				if("not_logged_in" == xhr.getResponseHeader('userstat')) {
+//					relogin();
+//				}
+//				
+//			}
+//		}
+//	});
+}
+
 // 	$('#save-blog').click(function() {
 // 		$.ajax({
 // 			type : 'post',

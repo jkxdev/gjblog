@@ -155,6 +155,7 @@ function unload_profile() {
 }
 function show_list() {
 	console.log("s-list is clicked");
+	fav_blogs();
 	$("#section-blog").empty();
 	$("#section-form").empty();
 	$("#section-update-user").empty();

@@ -118,6 +118,8 @@ public class AuthData {
 	    	//do nothing
 	    }catch(ExpiredJwtException e){
 	    	//do nothing
+	    }catch(IllegalArgumentException e){
+	    	
 	    }
 	    return claims;
 	}

@@ -34,12 +34,12 @@ public class RegistrationVerticle extends AbstractVerticle {
 			Datastore dataStore = MongoService.getDataStore();
 			
 			//Performing user name validations
-//			if(!performUserNameValidation(message, userDetail, dataStore))
-//				return;
+			if(!performUserNameValidation(message, userDetail, dataStore))
+				return;
 			
 			//Performing other validations
-//			if(!performCommonValidations(message, userDetail))
-//				return;
+			if(!performCommonValidations(message, userDetail))
+				return;
 			
 			BasicDAO<UserDetail, String> dao = new BasicDAO<>(UserDetail.class, dataStore);
 //			dao.save(userDetail);

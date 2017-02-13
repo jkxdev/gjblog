@@ -17,11 +17,11 @@ public interface Paths {
 	
 	public static String P_GET_RECENT_BLOG_WITH_COMMENTS = "/api/blog/recent";
 	
-	public static String P_GET_FAV_BLOGS_LIST = "/api/blog/favorites";
+	public static String P_GET_FAV_BLOGS_LIST = "/api/blog/favorites/";
 
 	public static String P_GET_BLOG_WITH_COMMENTS = "/api/blog/:blogId";
 	
 	public static String P_SEARCH_BLOGS = "/api/blog/searchblogs/:searchText";
 	
-	public static String P_ADD_COMMENTS = "/api/blog/comment/:blogId";
+	public static String P_UPDATE_COMMENTS = "/api/blog/comment/:blogId";
 }
