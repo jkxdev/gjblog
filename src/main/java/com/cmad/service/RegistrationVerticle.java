@@ -38,8 +38,8 @@ public class RegistrationVerticle extends AbstractVerticle {
 				return;
 			
 			//Performing other validations
-			if(!performCommonValidations(message, userDetail))
-				return;
+//			if(!performCommonValidations(message, userDetail))
+//				return;
 			
 			BasicDAO<UserDetail, String> dao = new BasicDAO<>(UserDetail.class, dataStore);
 //			dao.save(userDetail);

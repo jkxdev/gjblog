@@ -23,7 +23,7 @@ public class MainVerticle extends AbstractVerticle {
 	private static Router router;
 
 	public void start(Future<Void> future) throws Exception {
-		startServer("start()");
+		//startServer("start()");
 	}
 	private static void startServer(String str)	{
 		System.out.println("starting...from "+str);
@@ -89,11 +89,17 @@ public class MainVerticle extends AbstractVerticle {
 				if (r.result() != null) {
 					//encode the json - to do btoa here and in javascript will do atob...
 					//making sure that the unprintable chars are not causing any json parse error
-					String resp_string =  new String(Base64.getEncoder().encode(r.result().body().toString().getBytes()));
-					System.out.println("[200]  MainVerticle.setLoginHandler() r.result().body() " + resp_string);
-					rctx.response().setStatusCode(200).end(resp_string);
+					if(r.result().body() != null) {
+						String resp_string =  new String(Base64.getEncoder().encode(r.result().body().toString().getBytes()));
+						System.out.println("[200]  MainVerticle.setLoginHandler() r.result().body() " + resp_string);
+						rctx.response().setStatusCode(200).end(resp_string);
+					}
+					else {
+						//System.out.println("MainVerticle.setLoginHandler() login response " + r.cause().getMessage());
+						rctx.response().setStatusCode(404).end();
+					}	
 				} else {
-					System.out.println("Line no :88 MainVerticle.setLoginHandler() login response " + r.cause().getMessage());
+					System.out.println("MainVerticle.setLoginHandler() login response " + r.cause().getMessage());
 					rctx.response().setStatusCode(404).end(r.cause().getMessage());
 				}				
 			});
@@ -142,7 +148,7 @@ public class MainVerticle extends AbstractVerticle {
 					System.out.println("MainVerticle.setRegistrationHandler() result is :" + r.result().body().toString() );
 					rctx.response().setStatusCode(200).end(r.result().body().toString());
 				} else {
-					System.out.println("MainVerticle.setRegistrationHandler() result is :" + r.result().body().toString() );
+					System.out.println("MainVerticle.setRegistrationHandler() result is :" + r.result().body() );
 					rctx.response().setStatusCode(404).end(r.cause().getMessage());
 				}
 			});

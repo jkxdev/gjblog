@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+
+    <head>
+
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>Bootstrap Modal Login Form Template</title>
+
+        <!-- CSS -->
+        <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Roboto:400,100,300,500">
+        <link rel="stylesheet" href="assets/bootstrap/css/bootstrap.min.css">
+        <link rel="stylesheet" href="assets/css/font-awesome.min.css">
+        <link rel="stylesheet" href="assets/css/form-elements.css">
+        <link rel="stylesheet" href="assets/css/mystyle.css">
+        <link rel="stylesheet" href="assets/bootstrap/dist/bootstrap-tagsinput.css">
+        <!-- <link rel="stylesheet" href="assets/css/search-form.css"> -->
+
+
+    </head>
+
+    <body>
+
+        <!-- Content -->
+        <div class="top-content">
+            <nav class="navbar navbar-trans navbar-fixed-top" role="navigation">
+                <div class="container">
+                    <div class="navbar-header">
+                        <a href="#" id="s-latest" onclick="show_latest()">
+                        <img class="navbar-brand" href="#section1" src="assets/img/earth.png"></img>
+                        </a>
+                    </div>
+                    <div class="navbar-collapse collapse" id="navbar-collapsible">
+                        <ul class="nav navbar-nav navbar-left">
+                            <li><a id="s-list" onclick="show_list()">Recent Blogs</a></li>
+                            <li><a id="s-invite">Invite</a></li>
+                            <li><a id="s-contact">Contact</a></li>
+                            <li><a id="s-new" onclick="show_form()"><span class="glyphicon glyphicon-pencil"></span> New Blog</a></li>
+                            <li>&nbsp;</li>
+                        </ul>
+                        <ul class="nav navbar-nav navbar-right">
+                            <!-- <li><a href="#" data-toggle="modal" data-target="#loginModal">
+                                <span class="glyphicon glyphicon-user"></span>
+                            </a></li> -->
+                            <!-- <li><a href="#" data-toggle="modal" data-target="#loginModal"><i class="fa fa-user-times fa-lg"></i></a></li> -->
+                            <li class="dropdown">
+                              <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><i class="fa fa-user-times fa-lg"></i> <span class="caret"></span></a>
+                              <ul class="dropdown-menu">
+                                <a href="#" data-toggle="modal" data-target="#loginModal"><i class="fa fa-user fa-lg">   Login</i></a>
+                              </ul>
+                            </li> 
+                        </ul>
+                        <div class="col-sm-3 col-md-3 pull-right">
+                            <form class="navbar-form" role="search">
+                                <div class="input-group">
+                                    <input type="text" class="form-control gjform-control trans-input trans-search" placeholder="Search Blogs" name="q">
+                                    <div class="input-group-btn">
+                                        <button class="btn btn-default btn-trans" type="submit">
+                                        <i class="glyphicon glyphicon-search"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div> 
+                        <!-- <div class="col-sm-3 col-md-3 pull-right">
+                            <form class="search-form searchbar" role="search" id="hiddenSearchBox" action="" method="get">
+                              <div class="input-group">
+                                <input type="hidden" name="id" value="63">
+                                <input type="search" name="keywords" class="form-control" placeholder="Search..">
+                                <div class="input-group-btn">
+                                  <button type="submit" class="btn btn-default" data-toggle="searchbar" data-target="#hiddenSearchBox">
+                                    <span class="glyphicon glyphicon-search"></span> <span class="sr-only">Submit</span>
+                                  </button>
+                                </div>
+                              </div>
+                            </form>
+                        </div> -->
+                    </div>
+                </div>
+            </nav>
+        <div class="container">
+    <div class="row">
+    <!-- Blog Sidebar Widgets Column -->
+        <div class="col-md-3">
+
+            <!-- Blog Categories Well -->
+            <div class="well">
+                <h4>Favourite Posts</h4>
+                <ul class="list-unstyled">
+                    <li><a href="#">asdfjaf adflkajflaskdjf afflaskfjaf asl</a>
+                    </li>
+                    <li><a href="#">asdfjaf adflkajflaskdjf afflaskfjaf asl</a>
+                    </li>
+                    <li><a href="#">asdfjaf adflkajflaskdjf afflaskfjaf asl</a>
+                    </li>
+                    <li><a href="#">Casdfjaf adflkajflaskdjf afflaskfjaf asl</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+     <div class="col-lg-6 gj-blog-form">
+        <div class="row">
+            <form>
+              <div class="form-group">
+                <label for="Name-input" class="col-2 col-form-label">Name</label>
+                <div class="col-9">
+                  <input class="form-control" type="search" value="How do I shoot web" id="example-search-input">
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="email-input" class="col-2 col-form-label">Email</label>
+                <div class="col-9">
+                  <input class="form-control" type="email" value="bootstrap@example.com" id="example-email-input">
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="password-input" class="col-2 col-form-label">Password</label>
+                <div class="col-9">
+                  <input class="form-control" type="password" value="hunter2" id="example-password-input">
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="password-input" class="col-2 col-form-label">Confirm Password</label>
+                <div class="col-9">
+                  <input class="form-control" type="password" value="hunter2" id="example-password-input">
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="tel-input" class="col-2 col-form-label">Telephone</label>
+                <div class="col-9   ">
+                  <input class="form-control" data-role="tagsinput" type="tel" value="1-(555)-555-5555" id="example-tel-input">
+                </div>
+              </div>
+
+              <label for="tagSelect"><b>Area Of Interest</b></label>
+              <br>
+              <div class="form-check form-check-inline">
+                  <label class="form-check-label">
+                    <input class="form-check-input" type="checkbox" id="inlineCheckbox1" value="Science"> Science</label>
+                </div>
+                <div class="form-check form-check-inline">
+                  <label class="form-check-label">
+                    <input class="form-check-input" type="checkbox" id="inlineCheckbox2" value="Maths"> Maths</label>
+                </div>
+                <div class="form-check form-check-inline ">
+                  <label class="form-check-label">
+                    <input class="form-check-input" type="checkbox" id="inlineCheckbox3" value="Social Science"> Social Science</label>
+                </div>
+                <div class="form-check form-check-inline disabled">
+                  <label class="form-check-label">
+                    <input class="form-check-input" type="checkbox" id="inlineCheckbox3" value="Arts" disabled> Arts</label>
+                </div>
+                <div class="form-check form-check-inline ">
+                  <label class="form-check-label">
+                    <input class="form-check-input" type="checkbox" id="inlineCheckbox3" value="English"> English</label>
+                </div>
+              <button type="submit" class="btn btn-primary">Update</button>
+            </form>
+
+        </div>
+     </div>
+             <!-- Blog Sidebar Widgets Column -->
+        <div class="col-md-3">
+            <div class="well">
+                <h3>Messages</h3>
+                <p id="blog-posted"> <a href="#">Start Bootstrap</a> | August 24, 2013 at 9:00 PM</p>
+                <p class="message-post">message content truncated to 50 characters</p>
+                <hr>
+                 <p id="blog-posted"> <a href="#">Start Bootstrap</a> | August 24, 2013 at 9:00 PM</p>
+                <p class="message-post">message content truncated to 50 characters</p>
+                <hr>
+                <p id="blog-posted"> <a href="#">Start Bootstrap</a> | August 24, 2013 at 9:00 PM</p>
+                <p class="message-post">message content truncated to 50 characters</p>
+                <hr>
+                <p id="blog-posted"> <a href="#">Start Bootstrap</a> | August 24, 2013 at 9:00 PM</p>
+                <p class="message-post">message content truncated to 50 characters</p>
+                <hr>
+                </div>
+
+            </div>
+
+    </div>
+</div>
+
+<!-- footer  -->
+<div class="container">
+    <div class="row">
+        <div class="col-xs-6 col-sm-6 col-md-3 column">
+            <h4>Information</h4>
+            <ul class="nav">
+                <li><a href="about-us.html">About Us</a></li>
+            </ul>
+        </div>
+        <div class="col-xs-6 col-md-3 column">
+            <h4>Contact Us</h4>
+            <ul class="nav">
+                <li><a href="#">Email</a></li>
+            </ul>
+        </div>
+        <div class="col-xs-6 col-md-3 column">
+            <h4>Privacy</h4>
+            <ul class="nav">
+                <li><a href="#">Privacy Policy</a></li>
+            </ul>
+        </div>
+        <div class="col-xs-6 col-md-3 column">
+            <h4>Customer Service</h4>
+            <ul class="nav">
+                <li><a href="#">Terms &amp; Conditions</a></li>
+            </ul>
+        </div>
+    </div>
+    <!--/row-->
+    <p class="text-right">©2017</p>
+</div>
+<div id="loginModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="LoginModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                        <h2 class="text-center"><img src="assets/img/earth.png" class="img-circle img-modal"><br>Login</h2>
+                    </div>
+                    <div class="modal-body row">
+                        <form class="col-md-10 col-md-offset-1 col-xs-12 col-xs-offset-0">
+                            <div class="form-group">
+                                <input id="uname" type="text" class="form-control input-lg" placeholder="Email">
+                            </div>
+                            <div class="form-group">
+                                <input id="pwd" type="password" class="form-control input-lg" placeholder="Password">
+                            </div>
+                            <div class="form-group">
+                                <button id="login" onclick="login()" class="btn btn-danger btn-lg btn-block">Sign In</button>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <h6 class="text-center"><a href="">Privacy is important to us. Click here to read why.</a></h6>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="regModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="RegModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                        <h2 class="text-center"><img src="assets/img/earth.png" class="img-modal"><br>Login</h2>
+                    </div>
+                    <div class="modal-body row">
+                        <h6 class="text-center">COMPLETE THESE FIELDS TO SIGN UP</h6>
+                        <form class="col-md-10 col-md-offset-1 col-xs-12 col-xs-offset-0">
+                            <div class="form-group">
+                                <input id="email" type="email" class="form-control input-lg" placeholder="donald.trump@usa.net">
+                            </div>
+                            <div class="form-group">
+                                <input id="fullname" type="text" class="form-control input-lg" placeholder="Donald Trump">
+                            </div>
+                            <div class="form-group">
+                                <input id="pwd" type="password" class="form-control input-lg" placeholder="Password">
+                            </div>
+                            <div class="form-group">
+                                <input id="phno" type="text" class="form-control input-lg" placeholder="011-1234567">
+                            </div>                            
+                            <div class="form-group">
+                                <button id="register" onclick="register()" class="btn btn-danger btn-lg btn-block">Sign Up</button>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <h6 class="text-center"><a href="">Privacy is important to us. Click here to read why.</a></h6>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <!-- Javascript -->
+        <!-- <script src="assets/js/jquery-1.11.1.min.js"></script> -->
+        <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+        <script src="assets/bootstrap/js/bootstrap.min.js"></script>
+        <script src="assets/js/jquery.backstretch.min.js"></script>
+        <!-- <script type="text/javascript" src="assets/js/login.js"></script> -->
+        <script type="text/javascript" src="assets/js/switch3.js"></script>
+        <script type="text/javascript" src="assets/js/core-min.js"></script>
+        <script type="text/javascript" src="assets/js/sha256-min.js"></script>
+        <script src="assets/bootstrap/dist/bootstrap-tagsinput.min.js"></script>
+        <!-- <script type="text/javascript" src="assets/js/search-form.js"></script> -->
+    </body>
+
+</html>
