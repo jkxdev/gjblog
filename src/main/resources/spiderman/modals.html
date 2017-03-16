@@ -1,0 +1,111 @@
+<div modal="loginModal" class="modal fade" tabindex="-1" role="dialog"
+			aria-labelledby="LoginModalLabel" aria-hidden="true">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal"
+							aria-hidden="true">×</button>
+						<h2 class="text-center">
+							<img src="assets/img/earth.png" class="img-circle img-modal"><br>Login
+						</h2>
+					</div>
+					<div class="modal-body row">
+						<form class="col-md-10 col-md-offset-1 col-xs-12 col-xs-offset-0" novalidate>
+							<div class="form-group">
+								<input ng-model="username" type="text" class="form-control input-lg"
+									placeholder="Email">
+							</div>
+							<div class="form-group">
+								<input ng-model="pwd" type="password" class="form-control input-lg"
+									placeholder="Password">
+							</div>
+							<div class="form-group">
+								<button ng-click="profile_login()" type='submit'
+									class="btn btn-danger btn-lg btn-block">Sign In</button>
+							</div>
+						</form>
+					</div>
+					<div class="modal-footer">
+						<h6 class="text-center">
+							<a href="">Privacy is important to us. Click here to read why.</a>
+						</h6>
+					</div>
+				</div>
+			</div>
+		</div>
+	
+		<div id="regModal" class="modal fade" tabindex="-1" role="dialog"
+			aria-labelledby="RegModalLabel" aria-hidden="true">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal"
+							aria-hidden="true">×</button>
+						<h2 class="text-center">
+							<img src="assets/img/earth.png" class="img-modal"><br>Login
+						</h2>
+					</div>
+					<div class="modal-body row">
+						<h6 class="text-center">COMPLETE THESE FIELDS TO SIGN UP</h6>
+						<form class="col-md-10 col-md-offset-1 col-xs-12 col-xs-offset-0" novalidate>
+							<div class="form-group">
+								<input ng-model="regData.email" type="email" class="form-control input-lg"
+									placeholder="donald.trump@usa.net">
+							</div>
+							<div class="form-group">
+								<input ng-model="regData.fullName" type="text" class="form-control input-lg"
+									placeholder="Donald Trump">
+							</div>
+							<div class="form-group">
+								<input ng-model="regData.pwd" type="password" class="form-control input-lg"
+									placeholder="Password">
+							</div>
+							<div class="form-group">
+								<input ng-model="regData.phno" type="text" class="form-control input-lg"
+									placeholder="011-1234567">
+							</div>
+							<label for="tagSelect"><b>Area Of Interest</b></label> <br>
+							<div class="form-check form-check-inline">
+								<label class="form-check-label"> <input
+									class="form-check-input" type="checkbox" id="inlineCheckbox1"
+									value="Science"> Science
+								</label>
+							</div>
+							<div class="form-check form-check-inline">
+								<label class="form-check-label"> <input
+									class="form-check-input" type="checkbox" id="inlineCheckbox2"
+									value="Maths"> Maths
+								</label>
+							</div>
+							<div class="form-check form-check-inline ">
+								<label class="form-check-label"> <input
+									class="form-check-input" type="checkbox" id="inlineCheckbox3"
+									value="Social Science"> Social Science
+								</label>
+							</div>
+							<div class="form-check form-check-inline disabled">
+								<label class="form-check-label"> <input
+									class="form-check-input" type="checkbox" id="inlineCheckbox3"
+									value="Arts" disabled> Arts
+								</label>
+							</div>
+							<div class="form-check form-check-inline ">
+								<label class="form-check-label"> <input
+									class="form-check-input" type="checkbox" id="inlineCheckbox3"
+									value="English"> English
+								</label>
+							</div>
+							<div class="form-group">
+								<button id="register"  ng-click="profile_register()"
+									class="btn btn-danger btn-lg btn-block">Sign Up</button>
+							</div>
+						</form>
+					</div>
+					<div class="modal-footer">
+						<h6 class="text-center">
+							<a href="">Privacy is important to us. Click here to read why.</a>
+						</h6>
+					</div>
+				</div>
+			</div>
+		</div>

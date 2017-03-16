@@ -31,52 +31,30 @@
 					<form>
 						<div class="form-group">
 							<input type="text" class="jumbo-input trans-input form-control"
-								id="blog-title" aria-describedby="emailHelp"
+								ng-model="postData.blogTitle" aria-describedby="emailHelp"
 								placeholder="Blog Post Title" data-role='none'>
 						</div>
 						<hr>
 						<div class="form-group">
-							<label for="Textarea"><b>Content</b></label>
-							<textarea class="form-control" id="exampleTextarea" rows="12"></textarea>
-						</div>
-	
-						<label for="tagSelect"><b>Choose the tags</b></label> <br>
-						<div class="form-check form-check-inline">
-							<label class="form-check-label"> <input
-								class="form-check-input" type="checkbox" id="inlineCheckbox1"
-								value="Science"> Science
+							<label for="Textarea">
+								<b>Content</b>
 							</label>
+                			<textarea class="form-control" ng-model="postData.blogContent" rows="12">
+                			</textarea>
 						</div>
-						<div class="form-check form-check-inline">
-							<label class="form-check-label"> <input
-								class="form-check-input" type="checkbox" id="inlineCheckbox2"
-								value="Maths"> Maths
-							</label>
+              			<div class="form-group">
+		                	<label for="exampleInputFile"><b>Add a Blog Picture</b></label>
+		                	<br>
+		                	<input type="file" class="form-control-file" id="exampleInputFile" aria-describedby="fileHelp">
 						</div>
-						<div class="form-check form-check-inline ">
-							<label class="form-check-label"> <input
-								class="form-check-input" type="checkbox" id="inlineCheckbox3"
-								value="Social Science"> Social Science
-							</label>
-						</div>
-						<div class="form-check form-check-inline disabled">
-							<label class="form-check-label"> <input
-								class="form-check-input" type="checkbox" id="inlineCheckbox3"
-								value="Arts" disabled> Arts
-							</label>
-						</div>
-						<div class="form-check form-check-inline ">
-							<label class="form-check-label"> <input
-								class="form-check-input" type="checkbox" id="inlineCheckbox3"
-								value="English"> English
-							</label>
-						</div>
-						<div class="form-group">
-							<label for="exampleInputFile"><b>Add a Blog Picture</b></label> <br>
-							<input type="file" class="form-control-file" id="exampleInputFile"
-								aria-describedby="fileHelp">
-						</div>
-						<button type="submit" class="btn btn-primary">Submit</button>
+						<div ng-model="postData.blogAuthorUsername"></div>
+		              <div id="blog-tag-div" class="form-group">
+		                <label for="tagSelect"><b>Choose the tags(Comma separated)</b></label>
+		              	<br>
+		               	<input class="form-control" data-role="tagsinput" type="tel" value="Cloud Computing" 
+		               		ng-model="postData.blogAreaOfInterest" id="blog-tags">
+					  </div>
+		              <button type="button" class="btn btn-primary" ng-click="save_blog()">Submit</button>
 					</form>
 	
 				</div>

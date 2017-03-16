@@ -6,6 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Mangoes are Blue</title>
+<base href="/">
 
 <!-- CSS -->
 <link rel="stylesheet"
@@ -14,22 +15,26 @@
 <link rel="stylesheet" href="assets/css/font-awesome.min.css">
 <link rel="stylesheet" href="assets/css/form-elements.css">
 <link rel="stylesheet" href="assets/css/mystyle.css">
+<link rel="stylesheet" href="assets/bootstrap/dist/bootstrap-tagsinput.css">
 <!-- <link rel="stylesheet" href="assets/css/search-form.css"> -->
 <!-- Javascript -->
 <!-- <script src="assets/js/jquery-1.11.1.min.js"></script> -->
-<script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+<script src="http://code.jquery.com/jquery-2.2.4.min.js"></script>
 <script src="assets/bootstrap/js/bootstrap.min.js"></script>
 <script src="assets/js/jquery.backstretch.min.js"></script>
 <script type="text/javascript" src="assets/js/angular.js"></script>
 <script type="text/javascript" src='assets/js/angular-resource.js'></script>
+<script type="text/javascript" src='assets/js/angular-websocket.min.js'></script>
 <script type="text/javascript" src="assets/js/routes.js"></script>
 <script type="text/javascript" src="assets/js/home.js"></script>
 <script type="text/javascript" src="assets/js/UserController.js"></script>
+<script type="text/javascript" src="assets/js/PostController.js"></script>
+<script type="text/javascript" src="assets/js/SearchController.js"></script>
 <script type="text/javascript" src="assets/js/BlogController.js"></script>
 <!-- <script type="text/javascript" src="assets/js/switch3.js"></script> -->
 <script type="text/javascript" src="assets/js/core-min.js"></script>
 <script type="text/javascript" src="assets/js/sha256-min.js"></script>
-<!-- <script type="text/javascript" src="assets/js/search-form.js"></script> -->
+<script src="assets/bootstrap/dist/bootstrap-tagsinput.min.js"></script>
 
 </head>
 
@@ -43,7 +48,7 @@
 			<nav class="navbar navbar-trans navbar-fixed-top" role="navigation">
 				<div class="container">
 					<div class="navbar-header">
-						<a href="#" id="s-latest" onclick="show_latest()"> <img
+						<a href="blog/latest" id="s-latest"> <img
 							class="navbar-brand" href="#section1" src="assets/img/earth.png"></img>
 						</a>
 					</div>
@@ -55,25 +60,18 @@
 							<li><a id="s-contact" href="#" data-toggle="modal"
 								data-target="#contactmodal"><span
 									class="glyphicon glyphicon-phone-alt"></span>&nbsp; Contact</a></li>
-							<li><a id="s-new" ng-click="new_post()" ng-show="logstat =='loggedin'"><span
+							<li><a id="s-new" href="blog/new-post" ng-show="logstat =='loggedin'"><span
 									class="glyphicon glyphicon-pencil"></span>&nbsp; New Blog</a></li>
 							<li>&nbsp;</li>
 						</ul>
 						<ul class="nav navbar-nav navbar-right" ng-init="show='loggedout'">
-							<!-- <li><a href="#" data-toggle="modal" data-target="#loginModal">
-			                    <span class="glyphicon glyphicon-user"></span>
-			                </a></li> -->
-							<!--ng-show="show=='loggedout' <li><a href="#" data-toggle="modal" data-target="#loginModal"><i class="fa fa-user-times fa-lg"></i></a></li> -->
 							<li class="dropdown" ng-show="logstat =='loggedout'"><a class="dropdown-toggle"
 								data-toggle="dropdown" role="button" aria-haspopup="true"
 								aria-expanded="false" id="loggedout"><i
 									class="fa fa-user-times fa-lg"></i> <span class="caret"></span></a>
 								<ul class="dropdown-menu" id="inactive-profile-drop">
-									<!-- <li id="in-out"><a href="#" data-toggle="modal" data-target="#loginModal"> -->
-									<li id="in-out"><a href="#" ng-click="launch_login_modal()">
+									<li id="in-out"><a href="#">
 										<span class="glyphicon glyphicon-user"></span>&nbsp; &nbsp; Login/Register</a></li>
-									<!-- <li><a id="s-new" onclick="update_user()"><span class="glyphicon glyphicon-pencil"></span> Update User</a></li>
-			                        <li><a id="s-list" onclick="show_list()">Recent Blogs</a></li> -->
 								</ul>
 							</li>
 							<li class="dropdown"  ng-show="logstat =='loggedin'"><a class="dropdown-toggle"
@@ -81,8 +79,8 @@
 								aria-expanded="false" id="loginstat">
 								<i class="fa fa-user fa-lg"></i> &nbsp;a@b.ccc<span class="caret"></span></a>
 								<ul class="dropdown-menu" id="active-profile-drop">
-									<li><a id="s-new" ng-click="update_user()"><span class="glyphicon glyphicon-pencil"></span> Update User</a></li>
-									<li><a id="s-list" ng-click="show_list()">Recent Blogs</a></li>
+									<li><a id="s-new" href="user/update"><span class="glyphicon glyphicon-pencil"></span> Update User</a></li>
+									<li><a id="s-list" href="blog/list">Recent Blogs</a></li>
 									<li id="in-out"><a ng-click="profile_logout()"><span class="glyphicon glyphicon-log-out"></span>&nbsp; &nbsp; Logout</a></li>
 								</ul>
 							</li>
@@ -90,12 +88,12 @@
 						<div class="col-sm-3 col-md-3 pull-right">
 							<form class="navbar-form" role="search">
 								<div class="input-group">
-									<input type="text"
+									<input type="text" ng-model="searchText" 
 										class="form-control gjform-control trans-input trans-search"
 										placeholder="Search Blogs" name="q">
 									<div class="input-group-btn">
 										<button class="btn btn-default btn-trans"
-											onclick="search_blogs()">
+											ng-click="search_blogs()">
 											<!-- <button class="btn btn-default btn-trans" type="submit"> -->
 											<i class="glyphicon glyphicon-search"></i>
 										</button>
@@ -103,19 +101,6 @@
 								</div>
 							</form>
 						</div>
-						<!-- <div class="col-sm-3 col-md-3 pull-right">
-			                <form class="search-form searchbar" role="search" id="hiddenSearchBox" action="" method="get">
-			                  <div class="input-group">
-			                    <input type="hidden" name="id" value="63">
-			                    <input type="search" name="keywords" class="form-control" placeholder="Search..">
-			                    <div class="input-group-btn">
-			                      <button type="submit" class="btn btn-default" data-toggle="searchbar" data-target="#hiddenSearchBox">
-			                        <span class="glyphicon glyphicon-search"></span> <span class="sr-only">Submit</span>
-			                      </button>
-			                    </div>
-			                  </div>
-			                </form>
-			            </div> -->
 					</div>
 				</div>
 			</nav>
@@ -131,117 +116,7 @@
 			<a href="#"><i class="fa fa-angle-up"></i></a>
 		</div>
 	</div>
-		<div modal="loginModal" class="modal fade" tabindex="-1" role="dialog"
-			aria-labelledby="LoginModalLabel" aria-hidden="true">
-			<div class="modal-dialog">
-				<div class="modal-content">
-					<div class="modal-header">
-						<button type="button" class="close" data-dismiss="modal"
-							aria-hidden="true">×</button>
-						<h2 class="text-center">
-							<img src="assets/img/earth.png" class="img-circle img-modal"><br>Login
-						</h2>
-					</div>
-					<div class="modal-body row">
-						<form class="col-md-10 col-md-offset-1 col-xs-12 col-xs-offset-0" novalidate>
-							<div class="form-group">
-								<input ng-model="username" type="text" class="form-control input-lg"
-									placeholder="Email">
-							</div>
-							<div class="form-group">
-								<input ng-model="pwd" type="password" class="form-control input-lg"
-									placeholder="Password">
-							</div>
-							<div class="form-group">
-								<button ng-click="profile_login()" type='submit'
-									class="btn btn-danger btn-lg btn-block">Sign In</button>
-							</div>
-						</form>
-					</div>
-					<div class="modal-footer">
-						<h6 class="text-center">
-							<a href="">Privacy is important to us. Click here to read why.</a>
-						</h6>
-					</div>
-				</div>
-			</div>
-		</div>
-	
-		<div id="regModal" class="modal fade" tabindex="-1" role="dialog"
-			aria-labelledby="RegModalLabel" aria-hidden="true">
-			<div class="modal-dialog">
-				<div class="modal-content">
-					<div class="modal-header">
-						<button type="button" class="close" data-dismiss="modal"
-							aria-hidden="true">×</button>
-						<h2 class="text-center">
-							<img src="assets/img/earth.png" class="img-modal"><br>Login
-						</h2>
-					</div>
-					<div class="modal-body row">
-						<h6 class="text-center">COMPLETE THESE FIELDS TO SIGN UP</h6>
-						<form class="col-md-10 col-md-offset-1 col-xs-12 col-xs-offset-0" novalidate>
-							<div class="form-group">
-								<input ng-model="regData.email" type="email" class="form-control input-lg"
-									placeholder="donald.trump@usa.net">
-							</div>
-							<div class="form-group">
-								<input ng-model="regData.fullName" type="text" class="form-control input-lg"
-									placeholder="Donald Trump">
-							</div>
-							<div class="form-group">
-								<input ng-model="regData.pwd" type="password" class="form-control input-lg"
-									placeholder="Password">
-							</div>
-							<div class="form-group">
-								<input ng-model="regData.phno" type="text" class="form-control input-lg"
-									placeholder="011-1234567">
-							</div>
-							<label for="tagSelect"><b>Area Of Interest</b></label> <br>
-							<div class="form-check form-check-inline">
-								<label class="form-check-label"> <input
-									class="form-check-input" type="checkbox" id="inlineCheckbox1"
-									value="Science"> Science
-								</label>
-							</div>
-							<div class="form-check form-check-inline">
-								<label class="form-check-label"> <input
-									class="form-check-input" type="checkbox" id="inlineCheckbox2"
-									value="Maths"> Maths
-								</label>
-							</div>
-							<div class="form-check form-check-inline ">
-								<label class="form-check-label"> <input
-									class="form-check-input" type="checkbox" id="inlineCheckbox3"
-									value="Social Science"> Social Science
-								</label>
-							</div>
-							<div class="form-check form-check-inline disabled">
-								<label class="form-check-label"> <input
-									class="form-check-input" type="checkbox" id="inlineCheckbox3"
-									value="Arts" disabled> Arts
-								</label>
-							</div>
-							<div class="form-check form-check-inline ">
-								<label class="form-check-label"> <input
-									class="form-check-input" type="checkbox" id="inlineCheckbox3"
-									value="English"> English
-								</label>
-							</div>
-							<div class="form-group">
-								<button id="register"  ng-click="profile_register()"
-									class="btn btn-danger btn-lg btn-block">Sign Up</button>
-							</div>
-						</form>
-					</div>
-					<div class="modal-footer">
-						<h6 class="text-center">
-							<a href="">Privacy is important to us. Click here to read why.</a>
-						</h6>
-					</div>
-				</div>
-			</div>
-		</div>
+		
 		<div id="invitemodal" class="modal fade" tabindex="-1" role="dialog"
 			aria-labelledby="inviteModalLabel" aria-hidden="true">
 			<div class="modal-dialog">

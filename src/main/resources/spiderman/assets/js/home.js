@@ -1,4 +1,4 @@
-var BlogModule = angular.module('Blog-App', ['ngRoute']);
+var BlogModule = angular.module('Blog-App', ['ngRoute','ngWebSocket']);
 BlogModule.service('HomeService', function($http,$rootScope){
 	var sleep = function(miliseconds) {
 	   var currentTime = new Date().getTime();
@@ -6,12 +6,12 @@ BlogModule.service('HomeService', function($http,$rootScope){
 	   while (currentTime + miliseconds >= new Date().getTime()) {
 	   }
 	};
-	var sendMsg = function(message) {
+	var sendMsg = function(message,data="") {
 		console.log("sending message : ",message);
-		$rootScope.$broadcast('loginEvent', {event: message});
+		$rootScope.$broadcast('loginEvent', {event: message,payload:data});
 	}
-	this.msgSendService = function(message){
-		sendMsg(message);
+	this.msgSendService = function(message,data=""){
+		sendMsg(message,data);
 	};
 	
 	this.register = function(rData) {
@@ -109,13 +109,14 @@ BlogModule.controller("HomeController", ['$scope','HomeService','$location',func
 		if(data.event == 'loggedIn') {
 			load_profile();
 		}
-		else if(data.event == 'loginFailed') {
-			console.log("login Failed event recived");
+		else if(data.event == 'loginFailed' || 'authFailed' == data.event) {
+			console.log(data.event + ": event recived");
 			unload_profile();
+			$location.url('');
 		}
-		else if('profileLoaded' == data.event){
+		else if('profileLoaded' == data.event || data.event == 'blogPosted'){
 			console.log("profile.loaded event recievd");
-			$location.url('/blog');
+			$location.url('api/blog/latest');
 			
 		}
 		else {
@@ -139,18 +140,17 @@ BlogModule.controller("HomeController", ['$scope','HomeService','$location',func
 		unload_profile();
 	};
 	
-	$scope.launch_login_modal = function() {
-		console.log("launch_login_modal clidked");
-		$scope.loginModal = true;
+	$scope.search_blogs = function() {
+		console.log("search_blogs called with : " + $scope.searchText);
+		if(HomeService.isValidLogin() == true) {
+			$location.url('blog/search');
+			HomeService.msgSendService("searchCalled", $scope.searchText);
+		}
 	}
 	
 	var load_profile = function(){
 		if(true == HomeService.isValidLogin()) {
 			console.log("Logged in: loading profile");
-//			$("#profile-drop").empty();
-//			$("#profile-drop").append('<li><a id="s-new" ng-click="update_user()"><span class="glyphicon glyphicon-pencil"></span> Update User</a></li>');
-//			$("#profile-drop").append('<li><a id="s-list" ng-click="show_list()">Recent Blogs</a></li>');
-//			$("#profile-drop").append('<li id="in-out"><a ng-click="profile_logout()"><span class="glyphicon glyphicon-log-out"></span>&nbsp; &nbsp; Logout</span></a></li>');
 			$scope.logstat='loggedin';
 			$("#loginstat").text(HomeService.getlogin_session().id);
 			$("#loginstat").prepend('<i class="fa fa-user fa-lg"></i> &nbsp;');
@@ -181,20 +181,24 @@ BlogModule.controller("HomeController", ['$scope','HomeService','$location',func
 }]);
 
 
-BlogModule.config(function($routeProvider) {
-	$routeProvider.when('/list', {
+BlogModule.config(function($routeProvider,$locationProvider) {
+	$routeProvider.when('/blog/list', {
 		templateUrl : 'section-list.html',
 		//controller : 'ListController'
-	}).when('/blog', {
+	}).when('/api/blog/latest', {
 		templateUrl : 'section-blog.html',
 		controller : 'BlogController'
 	}).when('/blog/new-post', {
 		templateUrl : 'new-post.html',
-		//controller : 'PostController'
+		controller : 'PostController'
 	}).when('/user/update', {
 		templateUrl : 'update-user.html',
 		controller : 'UserController'
+	}).when('/blog/search', {
+		templateUrl : 'section-list.html',
+		controller : 'SearchController'
 	}).otherwise({
 		templateUrl : 'login.html'
 	});
+	$locationProvider.html5Mode(true);
 });

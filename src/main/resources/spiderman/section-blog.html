@@ -56,7 +56,7 @@
 						<div class="row" >
 							<p class="lead" ng-bind="first_para"> </p>
 						</div>
-						<div class="row" ng-repeat="para in paras">
+						<div class="row" ng-repeat="para in paras track by $index">
 							<p> {{para}}</p>
 						</div>
 						<div class="well">

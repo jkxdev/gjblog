@@ -11,6 +11,7 @@ html, body {
 @media ( min-width :768px) {
 	h1 {
 		font-size: 68px;
+		text-transform:capitalize;
 	}
 }
 
@@ -211,4 +212,7 @@ footer .nav>li>a {
 footer .nav>li>a:hover {
 	background-color: transparent;
 	color: #fff;
+}
+.my-blog-tag {
+	width:100%;
 }

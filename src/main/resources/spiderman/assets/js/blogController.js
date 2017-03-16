@@ -22,7 +22,7 @@ BlogModule.service('BlogService', function($http,$rootScope){
 	this.fetch_recent_blog = function() {
 		$http({
 			  method: 'POST',
-			  url: 'http://localhost:8080/api/blog/recent',
+			  url: 'http://localhost:8080/api/blog/latest',
 			  data: null,
 			  headers: { "id":localStorage.getItem("id"),
 				   "tok":localStorage.getItem("tok"),
@@ -41,22 +41,6 @@ BlogModule.service('BlogService', function($http,$rootScope){
 					sendMsg('loginFailed');
 				}
 			});
-//		var promise = $http.post('http://localhost:8080/api/blog/recent',null,{
-//	        headers: { "id":localStorage.getItem("id"),
-//					   "tok":localStorage.getItem("tok"),
-//					   "contentType": "application/json;charset=utf-8"}})
-//		.success(function(response){
-//			myBlog = response;
-//			console.log(response)
-//			sendMsg('blogFetched');
-//		})
-//		.error(function(response,status){
-//			alert(response.responseText);
-//			console.log('response erro code is ' + status + "; and the erro text is :\""+ response.responseText + "\"");
-//			if(401 == status) {
-//				sendMsg('loginFailed');
-//			}
-//		});
 	};
 	this.getRecentBlog = function() {
 		console.log("this is from the return function " + myBlog);
@@ -67,7 +51,7 @@ BlogModule.service('BlogService', function($http,$rootScope){
 BlogModule.controller("BlogController", function($scope, BlogService) {
 	
 	$scope.$on('loginEvent', function(event, data) {
-		if(data.event == 'profileLoaded') {
+		if(data.event == 'profileLoaded' || data.event == 'blogPosted') {
 			console.log('profileLoaded event recieved');
 			fetch_recent_blog();
 		}
@@ -79,9 +63,6 @@ BlogModule.controller("BlogController", function($scope, BlogService) {
 			console.log('loginEvent recieved : ' + data.event);
 		}
     });
-	
-	
-	
 	
 	$scope.new_post = function() {
 		console.log("new post request");
