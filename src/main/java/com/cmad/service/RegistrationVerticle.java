@@ -6,6 +6,7 @@ import org.mongodb.morphia.query.Query;
 import org.mongodb.morphia.query.UpdateOperations;
 import org.mongodb.morphia.query.UpdateResults;
 
+import com.cmad.auth.AuthData;
 import com.cmad.infra.MongoService;
 import com.cmad.model.UserDetail;
 
@@ -23,6 +24,7 @@ public class RegistrationVerticle extends AbstractVerticle {
 	}
 
 	private void handleRegistraion() {
+		
 		vertx.eventBus().consumer(Topics.REGISTRATION, message -> {
 			System.out.println("RegistrationVerticle.handleRegistraion() inside ");
 			UserDetail userDetail = Json.decodeValue(message.body().toString(), UserDetail.class);
@@ -30,7 +32,7 @@ public class RegistrationVerticle extends AbstractVerticle {
 			if(userDetail!=null){
 				System.out.println("RegistrationVerticle.handleRegistraion() Fields "+userDetail.toString());
 			}
-
+			String retstr = "";
 			Datastore dataStore = MongoService.getDataStore();
 			
 			//Performing user name validations
@@ -44,15 +46,19 @@ public class RegistrationVerticle extends AbstractVerticle {
 			BasicDAO<UserDetail, String> dao = new BasicDAO<>(UserDetail.class, dataStore);
 //			dao.save(userDetail);
 			Object user = dao.save(userDetail);
-
+			
 			MongoService.close();
 			System.out.println("RegistrationVerticle.handleRegistraion() user = "+user);
 			System.out.println("RegistrationVerticle.handleRegistraion() user class = "+user.getClass());
 			if(user==null){
 				message.fail(404, "X. No User created");
+				retstr = "";
 			}else{
-				message.reply(Json.encodePrettily(user));
+				retstr = getAuthData(userDetail);
+				System.out.println("LoginVerticle.start() retstr : " + retstr);
+				//message.reply(Json.encodePrettily(user));
 			}
+			message.reply(retstr);
 		});
 	}
 
@@ -151,5 +157,12 @@ public class RegistrationVerticle extends AbstractVerticle {
 				validationPassed = false;
 			}
 		 return validationPassed;
+	}
+	private String getAuthData(UserDetail user){
+		AuthData joken = new AuthData();
+		joken.setName(user.getUsername());
+		joken.makeLongUserJoken();
+		joken.validate();
+		return Json.encodePrettily(joken);
 	}
 }

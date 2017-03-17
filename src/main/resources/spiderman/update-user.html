@@ -6,8 +6,8 @@
 				<!-- Blog Categories Well -->
 				<div class="well">
 					<h4>Favourite Posts</h4>
-					<ul ng-repeat = "fav in Favs track by $index" class="list-unstyled">
-						<li><a ng-click="get_blog({{ fav.link }})">{{ fav.title }}</a></li>
+					<ul class="list-unstyled">
+						<li ng-repeat = "fav in Favs track by $index"><a href="{{ fav.link }}">{{ fav.title }}</a></li>
 					</ul>
 				</div>
 			</div>
@@ -57,13 +57,25 @@
 			</div>
 			<!-- Blog Sidebar Widgets Column -->
 			<div class="col-md-3">
-				<div class="well">
+				<div class="container-fluid">
+ 				<div class="well">
 					<h3>Messages</h3>
-					<ul ng-repeat = "Message in Messages" class="list-unstyled">
-						<li><a href="#{{ fav.link }}">{{ Message.title }}</a>{{ Message.date }}</li>
+					<form>
+						<div class="form-group">
+							<label for="Name-input" class="col-2 col-form-label">Type Here</label>
+							<div class="col-9">
+								<input class="form-control" ng-model="myMsg">
+							</div>
+						</div>
+						
+						<button type="submit" class="btn btn-primary" ng-click="sendchat()">Update</button>
+						
+					</form>
+					<ul ng-repeat = "data in MyChat track by $index" class="list-unstyled">
+						 <li> {{ data }} </li>
 					</ul>
 				</div>
-	
+			</div>
 			</div>
 	
 		</div>

@@ -1,7 +1,7 @@
 /**
  * 
  */
-BlogModule.service('BlogService', function($http,$rootScope){
+BlogModule.service('BlogService', ['$http','BakBakService',function($http,BakBakService){
 	var s_sleep = function(miliseconds) {
 		   var currentTime = new Date().getTime();
 
@@ -11,18 +11,18 @@ BlogModule.service('BlogService', function($http,$rootScope){
 	this.sleep= function(milli) {
 		s_sleep(milli);
 	}
-	var sendMsg = function(message) {
-		$rootScope.$broadcast('loginEvent', {event: message});
-	}
-	this.msgSendService = function(message){
-		sendMsg(message);
-	};
+//	var sendMsg = function(message) {
+//		$rootScope.$broadcast('loginEvent', {event: message});
+//	}
+//	this.msgSendService = function(message){
+//		sendMsg(message);
+//	};
 	
 	var myBlog;
-	this.fetch_recent_blog = function() {
+	this.fetch_blog = function(searchBlogId) {
 		$http({
 			  method: 'POST',
-			  url: 'http://localhost:8080/api/blog/latest',
+			  url:  BakBakService.getHomePath() + '/api/blog/' + searchBlogId,
 			  data: null,
 			  headers: { "id":localStorage.getItem("id"),
 				   "tok":localStorage.getItem("tok"),
@@ -32,13 +32,12 @@ BlogModule.service('BlogService', function($http,$rootScope){
 			.success(function(response){
 			myBlog = response;
 			console.log(response)
-			sendMsg('blogFetched');
+			BakBakService.msgSendService('blogFetched');
 			})
 			.error(function(response,status){
-				alert(response.responseText);
 				console.log('response erro code is ' + status + "; and the erro text is :\""+ response.responseText + "\"");
 				if(401 == status) {
-					sendMsg('loginFailed');
+					BakBakService.msgSendService('loginFailed');
 				}
 			});
 	};
@@ -46,18 +45,18 @@ BlogModule.service('BlogService', function($http,$rootScope){
 		console.log("this is from the return function " + myBlog);
 		return myBlog;
 	};
-});
+}]);
 
-BlogModule.controller("BlogController", function($scope, BlogService) {
+BlogModule.controller("BlogController", function($scope, $routeParams, BlogService) {
 	
 	$scope.$on('loginEvent', function(event, data) {
 		if(data.event == 'profileLoaded' || data.event == 'blogPosted') {
 			console.log('profileLoaded event recieved');
-			fetch_recent_blog();
+			BlogService.fetch_blog("latest");
 		}
 		else if('blogFetched' == data.event) {
 			console.log('blogFetched event recieved : ' + data.event);
-			show_latest();
+			show_blog();
 		}
 		else {
 			console.log('loginEvent recieved : ' + data.event);
@@ -67,11 +66,12 @@ BlogModule.controller("BlogController", function($scope, BlogService) {
 	$scope.new_post = function() {
 		console.log("new post request");
 	}
-	var load_last = function(){
-		BlogService.fetch_recent_blog();	
+	var load_blog = function(){
+		console.log("load_blog: blogid is : " + $routeParams.blogId);
+		BlogService.fetch_blog($routeParams.blogId);	
 	}
 	
-	var show_latest = function() {
+	var show_blog = function() {
 		var rec_blog = BlogService.getRecentBlog();
 		var paralist = [];
 		console.log("blog : "+ rec_blog);
@@ -106,5 +106,5 @@ BlogModule.controller("BlogController", function($scope, BlogService) {
 		}	
 
 	};
-	load_last();
+	load_blog();
 });

@@ -60,6 +60,8 @@ public class MainVerticle extends AbstractVerticle {
 		
 		setBlogFetchHandler(vertx);
 		
+		setSearchBlogsHandler(vertx);
+		
 		setUpdateCommentsHandler(vertx);
 
 		setValidateHandler(vertx);
@@ -143,10 +145,12 @@ public class MainVerticle extends AbstractVerticle {
 		router.route(Paths.P_REGISTRATION).handler(BodyHandler.create());
 		router.post(Paths.P_REGISTRATION).handler(rctx -> {
 
+			
 			vertx.eventBus().send(Topics.REGISTRATION, rctx.getBodyAsJson(), r -> {
 				if (r.result() != null) {
-					System.out.println("MainVerticle.setRegistrationHandler() result is :" + r.result().body().toString() );
-					rctx.response().setStatusCode(200).end(r.result().body().toString());
+					String resp_string =  new String(Base64.getEncoder().encode(r.result().body().toString().getBytes()));
+					System.out.println("MainVerticle.setRegistrationHandler() result is :" + resp_string );
+					rctx.response().setStatusCode(200).end(resp_string);
 				} else {
 					System.out.println("MainVerticle.setRegistrationHandler() result is :" + r.result().body() );
 					rctx.response().setStatusCode(404).end(r.cause().getMessage());
@@ -251,17 +255,51 @@ public class MainVerticle extends AbstractVerticle {
 		router.post(Paths.P_GET_BLOG_WITH_COMMENTS).handler(rctx -> {
 			System.out.println("MainVerticle.setBlogFetchHandler() got request");
 //			printHTTPServerRequest(rctx);
-			String blogId = rctx.pathParams().get("blogId");
-			System.out.println("MainVerticle.setBlogFetchHandler() blogId = "+blogId);
-			vertx.eventBus().send(Topics.GET_BLOG_WITH_COMMENTS, blogId, r -> {
-				if (r.result() != null) {
-					rctx.response().setStatusCode(200).end(r.result().body().toString());
-				} else {
-					rctx.response().setStatusCode(404).end(r.cause().getMessage());
-				}
-			});
+			if(true == validateToken(rctx)) {
+				String blogId = rctx.pathParams().get("blogId");
+				System.out.println("MainVerticle.setBlogFetchHandler() blogId = "+blogId);
+				vertx.eventBus().send(Topics.GET_BLOG_WITH_COMMENTS, blogId, r -> {
+					if (r.result() != null) {
+						rctx.response().setStatusCode(200).end(r.result().body().toString());
+					} else {
+						rctx.response().setStatusCode(404).end(r.cause().getMessage());
+					}
+				});
+			}
+			else {
+				rctx.response().putHeader("userstat","not_logged_in");
+				rctx.response().setStatusCode(401).end("Token authentication failed for Profile update please Re-login");
+			}
 		});
 	}
+	
+	//////
+	private static void setSearchBlogsHandler(Vertx vertx) {
+		System.out.println("MainVerticle.setSearchBlogsHandler() entered");
+		router.route(Paths.P_SEARCH_BLOGS).handler(BodyHandler.create());
+		router.post(Paths.P_SEARCH_BLOGS).handler(rctx -> {
+			System.out.println("MainVerticle.setSearchBlogsHandler() got request");
+			printHTTPServerRequest(rctx);
+			String searchTxt = rctx.pathParams().get("searchText");
+			if(true == validateToken(rctx)) {
+				String uId = rctx.request().getHeader("id");
+				System.out.println("MainVerticle.setSearchBlogsHandler() searchTxt = "+searchTxt);
+				System.out.println("MainVerticle.setSearchBlogsHandler() uId = "+uId);
+				vertx.eventBus().send(Topics.SEARCH_BLOGS, searchTxt, r -> {
+					if (r.result() != null) {
+						rctx.response().setStatusCode(200).end(r.result().body().toString());
+					} else {
+						rctx.response().setStatusCode(404).end(r.cause().getMessage());
+					}
+				});
+			}
+			else {
+				rctx.response().putHeader("userstat","not_logged_in");
+				rctx.response().setStatusCode(401).end("Token authentication failed for Profile update please Re-login");
+			}
+		});
+	}
+	//////
 	
 	private static void setUpdateCommentsHandler(Vertx vertx) {
 		System.out.println("MainVerticle.setUpdateCommentsHandler() entered");		

@@ -1,21 +1,21 @@
 /**
  * 
  */
-BlogModule.service('PostService', function($http,$rootScope){
+BlogModule.service('PostService', ['$http','BakBakService',function($http, BakBakService){
 	var result = "HCD: not found";
 	var myBlog;
-	var sendMsg = function(message) {
-		$rootScope.$broadcast('loginEvent', {event: message});
-	}
-	this.msgSendService = function(message){
-		sendMsg(message);
-	};
+//	var sendMsg = function(message) {
+//		$rootScope.$broadcast('loginEvent', {event: message});
+//	}
+//	this.msgSendService = function(message){
+//		sendMsg(message);
+//	};
 	
 	this.save_entry= function(blogform) {
 		console.log("save_blog called" + blogform);
 		$http({
 			method: 'POST',
-			url : 'http://localhost:8080/api/blog/',
+			url : BakBakService.getHomePath() + '/api/blog/',
 			data: blogform,
 			headers: {'id':localStorage.getItem("id"),
 					  'tok':localStorage.getItem("tok"),
@@ -24,26 +24,25 @@ BlogModule.service('PostService', function($http,$rootScope){
 		.success(function(response) {
 			myBlog = response;
 			console.log(response)
-			sendMsg('blogPosted');
+			BakBakService.msgSendService('blogPosted');
 		})
 		.error(function(response,status){
-			alert(response.responseText);
 			console.log('response erro code is ' + status + "; and the erro text is :\""+ response.responseText + "\"");
 			if(401 == status) {
-				sendMsg('authFailed');
+				BakBakService.msgSendService('authFailed');
 			}
 		});
 	};
-});
-BlogModule.controller('PostController', ['$scope','HomeService','PostService','$location',
-										function($scope, HomeService, PostService,$location) {
+}]);
+BlogModule.controller('PostController', ['$scope','HomeService','PostService','$location','BakBakService',
+										function($scope, HomeService, PostService,$location,BakBakService) {
 	
 	var load = function() {
 		if(true == HomeService.isValidLogin()) {
 			$('#blog-tags').tagsinput();
 		}
 		else {
-			PostService.msgSendService('authFailed');
+			BakBakService.msgSendService('authFailed');
 			//$location.url('#');
 		}
 	}

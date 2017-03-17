@@ -1,9 +1,11 @@
 package com.cmad.service;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.util.HashSet;
 import java.util.Hashtable;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
+import java.util.StringTokenizer;
 
 import org.mongodb.morphia.Datastore;
 import org.mongodb.morphia.dao.BasicDAO;
@@ -48,6 +50,9 @@ public class BlogVerticle  extends AbstractVerticle {
 		
 		//To update comments on existing blogs
 		handleUpdateComments();
+		
+		//To fetch a list of blogs based on title match or area-of-interest/flag match
+		handleSearchBlog();
 	}
 
 	/*
@@ -113,42 +118,69 @@ public class BlogVerticle  extends AbstractVerticle {
 		vertx.eventBus().consumer(Topics.GET_FAV_BLOGS_LIST, message -> {
 //			System.out.println("BlogVerticle.handleFetchFavoriteBlogsList() message="+message);
 //			System.out.println("BlogVerticle.handleFetchFavoriteBlogsList() message.body()="+message.body());
-//			String userId = message.body().toString();
-//			System.out.println("BlogVerticle.handleFetchBlog() inside --> userId = "+userId);
+			String userId = message.body().toString();
+			System.out.println("BlogVerticle.handleFetchBlog() inside --> userId = "+userId);
 
 			Datastore datastore = MongoService.getDataStore();
-			final Query<Blog> blogFetchQuery = datastore.createQuery(Blog.class).order(Sort.descending("blogCreatedTimeStamp"));
+			final Query<UserDetail> userDetailQuery = datastore.createQuery(UserDetail.class).field("username").equal(userId);
+			UserDetail user  = userDetailQuery.get();
 			
-			final List<Blog> blogs = blogFetchQuery.asList();
+			System.out.println("BlogVerticle.handleFetchFavoriteBlogsList() $$$$$$---------> user= "+user);
 			
-//			final Query<UserDetail> userDetailQuery = datastore.createQuery(UserDetail.class).field("username").equal(userId);
-//			UserDetail user  = userDetailQuery.get();
-//			
-//			System.out.println("BlogVerticle.handleFetchFavoriteBlogsList() --> user= "+user);
-			
-//			if(user != null)	{
-//				final Query<Blog> favBlogsFetchQuery = datastore.createQuery(Blog.class)
-//						.field("blogAreaOfInterest").equal(user.getAreaofinterest());
-//				final List<Blog> favBlogs = favBlogsFetchQuery.asList();
-//				
-//				System.out.println("BlogVerticle.handleFetchBlog() --> favBlogs = "+favBlogs);
-//				if(favBlogs == null || favBlogs.size() <= 0)	{
-//					message.fail(404, "No Favorite blogs available");
-//				}	else	{
-//					System.out.println("BlogVerticle.handleFetchFavoriteBlogsList() favBlogs.size()= "+favBlogs.size());
-////					String results = "";
-//					Hashtable results = new Hashtable();
-//					Blog tempBlog;
-//					for(int i=0; i<favBlogs.size(); i++)	{
-//						tempBlog = favBlogs.get(i);
-////						results = results + tempBlog.getBlog_id() + ":" + tempBlog.getBlogTitle() + ", ";
-//						results.put(tempBlog.getBlog_id(), tempBlog.getBlogTitle());
-//					}
-////					message.reply(Json.encodePrettily(favBlogs));
-//					message.reply(Json.encodePrettily(results));
-//				}				
-//			}
-			message.reply(Json.encodePrettily(blogs));
+			if(user != null)	{
+				
+				/////
+				String areaOfInterest = user.getAreaofinterest();
+				List<Blog> favBlogsList = null;
+				System.out.println("BlogVerticle.handleFetchFavoriteBlogsList() user.getAreaofinterest() = "+user.getAreaofinterest());
+				if(null != areaOfInterest) {
+					StringTokenizer tokeNizer = new StringTokenizer(areaOfInterest, ",");
+				
+					
+					while(tokeNizer.hasMoreTokens())	{
+						String nextToken = tokeNizer.nextToken();
+						final Query<Blog> favBlogsFetchQuery = datastore.createQuery(Blog.class)
+								.field("blogAreaOfInterest").contains(nextToken);
+						final List<Blog> tempFavBlogs = favBlogsFetchQuery.asList();
+	//					System.out.println("BlogVerticle.handleFetchFavoriteBlogsList() tokeNizer.nextToken() = "+nextToken);
+	//					System.out.println("BlogVerticle.handleFetchFavoriteBlogsList() tempFavBlogs.size() = "+tempFavBlogs.size());
+						if(favBlogsList == null)	{
+							favBlogsList = tempFavBlogs;
+						}else	{
+							for (Blog blog : tempFavBlogs) {
+								favBlogsList.add(blog);
+							}
+						}
+					}
+				}
+				
+//				System.out.println("BlogVerticle.handleFetchFavoriteBlogsList() favBlogsList = "+favBlogsList);
+//				if(favBlogsList != null)	{
+//					System.out.println("BlogVerticle.handleFetchFavoriteBlogsList() size of favBlogsList = "+favBlogsList.size());
+//				}
+				if(null != favBlogsList) {
+/*					Set<Blog> favBlogs = new HashSet<Blog>(favBlogsList);
+					if(favBlogs == null || favBlogs.size() <= 0)	{
+						message.fail(404, "No Favorite blogs available");
+					}	else	{
+						System.out.println("BlogVerticle.handleFetchFavoriteBlogsList() favBlogs.size()= "+favBlogs.size());
+						Hashtable results = new Hashtable();
+						Blog tempBlog;
+						Iterator favBlogIterator = favBlogs.iterator();
+						while(favBlogIterator.hasNext())	{
+							tempBlog = (Blog) favBlogIterator.next();
+							results.put(tempBlog.getBlog_id(), tempBlog.getBlogTitle());
+						}
+						message.reply(Json.encodePrettily(results));
+					}		
+					*/
+					message.reply(Json.encodePrettily(favBlogsList));
+				}
+				else {
+					message.fail(404, "No Favorite blogs available");
+				}
+			}
+//			message.reply(Json.encodePrettily(blogs));
 			MongoService.close();
 		});
 	}
@@ -259,4 +291,67 @@ public class BlogVerticle  extends AbstractVerticle {
 		 return isValidBlog;
 	}
 
+	/*
+	 * To blogs where title or area-of-interest/tag matches
+	 */
+	private void handleSearchBlog() {
+		vertx.eventBus().consumer(Topics.SEARCH_BLOGS, message -> {
+			System.out.println("BlogVerticle.handleSearchBlog() message="+message);
+			System.out.println("BlogVerticle.handleSearchBlog() message.body()="+message.body());
+			String serarchTxt = message.body().toString();
+			System.out.println("BlogVerticle.handleSearchBlog() inside --> serarchTxt = "+serarchTxt);
+
+			Datastore datastore = MongoService.getDataStore();
+			final Query<Blog> titleBasedSearchQuery = datastore.createQuery(Blog.class)
+					.field("blogTitle").contains(serarchTxt);
+			final List<Blog> titleBasedBlogsList = titleBasedSearchQuery.asList();
+			System.out.println("BlogVerticle.handleSearchBlog() searcBlogsList = "+titleBasedBlogsList);
+			if(titleBasedBlogsList != null)	{
+				System.out.println("BlogVerticle.handleSearchBlog() size of searcBlogsList = "+titleBasedBlogsList.size());
+			}
+			
+			final Query<Blog> tagBasedSearchQuery = datastore.createQuery(Blog.class)
+					.field("blogAreaOfInterest").contains(serarchTxt);
+			final List<Blog> tagBasedBlogsList = tagBasedSearchQuery.asList();
+			System.out.println("BlogVerticle.handleSearchBlog() tagBasedBlogsList = "+tagBasedBlogsList);
+			if(tagBasedBlogsList != null)	{
+				System.out.println("BlogVerticle.handleSearchBlog() size of tagBasedBlogsList = "+tagBasedBlogsList.size());
+				for(Blog tagBlog : tagBasedBlogsList)	
+				{
+					tagBlog.stripContentAt(120);
+				}
+			}
+			
+			Set<Blog> finalBlogsSet = new HashSet(titleBasedBlogsList);
+			
+			if(finalBlogsSet == null || finalBlogsSet.isEmpty())	
+			{
+				finalBlogsSet = new HashSet(tagBasedBlogsList);
+			}	
+			else	
+			{
+				for(Blog tagBlog : tagBasedBlogsList)	
+				{
+					finalBlogsSet.add(tagBlog);
+				}
+			}
+			/////
+			
+			if(finalBlogsSet == null || finalBlogsSet.size() <= 0)	{
+				message.fail(404, "No Blog blogs available based on search criteria");
+			}	
+			else	
+			{
+				//Hashtable results = new Hashtable();
+				for(Blog blog : finalBlogsSet)	{
+					//results.put(blog.getBlog_id(), blog.getBlogTitle(),blogstr);
+				}
+				//message.reply(Json.encodePrettily(results));
+				message.reply(Json.encodePrettily(finalBlogsSet));
+			}				
+//			message.reply(Json.encodePrettily(blogs));
+			MongoService.close();
+		});
+	}
+	
 }

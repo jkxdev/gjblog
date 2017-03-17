@@ -1,42 +1,51 @@
 var BlogModule = angular.module('Blog-App', ['ngRoute','ngWebSocket']);
-BlogModule.service('HomeService', function($http,$rootScope){
+
+BlogModule.service('BakBakService', ['$http','$rootScope','$location',function($http,$rootScope,$location){
+	this.getHomePath = function(prot="http") {
+		var homePath = prot + '://'+ $location.host() + ':' + $location.port();
+		console.log('BakBakService.getHomePath : returns :',homePath);
+		return homePath;
+	}
+	
+	this.msgSendService = function(message,data=""){
+		//sendMsg(message,data);
+		console.log("sending message : "  + message);
+		$rootScope.$broadcast('loginEvent', {event: message,payload:data});
+	};
+}]);
+
+	
+BlogModule.service('HomeService', ['$http','BakBakService',function($http, BakBakService){
 	var sleep = function(miliseconds) {
 	   var currentTime = new Date().getTime();
 
 	   while (currentTime + miliseconds >= new Date().getTime()) {
 	   }
 	};
-	var sendMsg = function(message,data="") {
-		console.log("sending message : ",message);
-		$rootScope.$broadcast('loginEvent', {event: message,payload:data});
-	}
-	this.msgSendService = function(message,data=""){
-		sendMsg(message,data);
-	};
 	
 	this.register = function(rData) {
 		var retVal = false;
-		var promise = $http.post('http://localhost:8080/api/user/registeration',rData)
+		var promise = $http.post(BakBakService.getHomePath() + '/api/user/registeration',rData)
 		.success(function(response){
 			setlogin_session(response);
-			sendMsg('loggedIn');
+			BakBakService.msgSendService('loggedIn');
 		})
 		.error(function(response) {
-			alert(response.responseText);
-			sendMsg('loginFailed');
+			console.log("register ERROR: " + response.responseText);
+			BakBakService.msgSendService('loginFailed');
 		});
 		return retVal;
 	};
 	this.login = function(lData) {
 		var retVal = false;
-		var promise = $http.post('http://localhost:8080/api/user/login',lData)
+		var promise = $http.post(BakBakService.getHomePath() + '/api/user/login',lData)
 		.success(function(response){
 			setlogin_session(response);
-			sendMsg('loggedIn');
+			BakBakService.msgSendService('loggedIn');
 		})
 		.error(function(response) {
 			alert("Username of password invalid");
-			sendMsg('loginFailed');
+			BakBakService.msgSendService('loginFailed');
 		});
 		return true;
 	}
@@ -50,7 +59,7 @@ BlogModule.service('HomeService', function($http,$rootScope){
 			localStorage.removeItem("tok");
 			console.log("login session cleared");
 		} else {
-			alert ("error:Sorry, your browser does not support Web Storage...");
+			console.log("clearlogin_session : error:Sorry, your browser does not support Web Storage...");
 		}
 	};
 
@@ -93,9 +102,9 @@ BlogModule.service('HomeService', function($http,$rootScope){
 		}
 	};
 
-});
+}]);
 
-BlogModule.controller("HomeController", ['$scope','HomeService','$location',function($scope, HomeService, $location) {
+BlogModule.controller("HomeController", ['$scope','HomeService','$location','BakBakService',function($scope, HomeService, $location,BakBakService) {
 	$scope.logstat='loggedout';
 	$scope.profile_login = function($lDat){
 		$lDat.pwd = HomeService.getpass($lDat.pwd);
@@ -116,7 +125,7 @@ BlogModule.controller("HomeController", ['$scope','HomeService','$location',func
 		}
 		else if('profileLoaded' == data.event || data.event == 'blogPosted'){
 			console.log("profile.loaded event recievd");
-			$location.url('api/blog/latest');
+			$location.url('blog/get/latest');
 			
 		}
 		else {
@@ -138,14 +147,11 @@ BlogModule.controller("HomeController", ['$scope','HomeService','$location',func
 	$scope.profile_logout = function(){
 		console.log("Logging out");
 		unload_profile();
+		$location.url('');
 	};
 	
-	$scope.search_blogs = function() {
-		console.log("search_blogs called with : " + $scope.searchText);
-		if(HomeService.isValidLogin() == true) {
-			$location.url('blog/search');
-			HomeService.msgSendService("searchCalled", $scope.searchText);
-		}
+	$scope.load_if_loggedin = function() {
+		load_profile();
 	}
 	
 	var load_profile = function(){
@@ -156,7 +162,7 @@ BlogModule.controller("HomeController", ['$scope','HomeService','$location',func
 			$("#loginstat").prepend('<i class="fa fa-user fa-lg"></i> &nbsp;');
 			$("#loginstat").append('<span class="caret"></span>');
 			console.log("loading profile complete");
-			HomeService.msgSendService("profileLoaded");
+			BakBakService.msgSendService("profileLoaded");
 			return true;
 		}
 		else {
@@ -169,8 +175,6 @@ BlogModule.controller("HomeController", ['$scope','HomeService','$location',func
 	var unload_profile = function() {
 		console.log("Unloading profile");
 		HomeService.clearlogin_session();
-//		$("#profile-drop").empty();
-//		$("#profile-drop").append('<li id="in-out"><a href="#"><span class="glyphicon glyphicon-user"></span>&nbsp; &nbsp; Login/Register</span></a></li>');
 		$scope.logstat ='loggedout';
 		$("#loginstat").text('');
 		$("#loginstat").prepend('<i class="fa fa-user-times fa-lg"></i>');
@@ -184,21 +188,43 @@ BlogModule.controller("HomeController", ['$scope','HomeService','$location',func
 BlogModule.config(function($routeProvider,$locationProvider) {
 	$routeProvider.when('/blog/list', {
 		templateUrl : 'section-list.html',
-		//controller : 'ListController'
-	}).when('/api/blog/latest', {
+		controller : 'ListController'
+	}).when('/blog/get/:blogId', {
 		templateUrl : 'section-blog.html',
 		controller : 'BlogController'
-	}).when('/blog/new-post', {
+	}).when('/blog/new', {
 		templateUrl : 'new-post.html',
 		controller : 'PostController'
 	}).when('/user/update', {
 		templateUrl : 'update-user.html',
 		controller : 'UserController'
 	}).when('/blog/search', {
-		templateUrl : 'section-list.html',
-		controller : 'SearchController'
+		templateUrl : 'section-list.html'//,
+		//controller : 'SearchController'
 	}).otherwise({
 		templateUrl : 'login.html'
 	});
-	$locationProvider.html5Mode(true);
+	//$locationProvider.html5Mode(true);
+});
+
+BlogModule.factory('ChatData','$websocket', '$location', function($websocket,$location) {
+    // Open a WebSocket connection
+	var chatpath  = 'ws://' + $location.host() + '/chat';
+	console.log(chatpath);
+    var dataStream = $websocket(chatpath);
+
+    var collection = [];
+
+    dataStream.onMessage(function(message) {
+      collection.push(JSON.parse(message.data));
+    });
+
+    var methods = {
+      collection: collection,
+      get: function() {
+        dataStream.send(JSON.stringify({ action: 'get' }));
+      }
+    };
+
+    return methods;
 });

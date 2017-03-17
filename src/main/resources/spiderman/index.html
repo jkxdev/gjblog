@@ -9,9 +9,10 @@
 <base href="/">
 
 <!-- CSS -->
-<link rel="stylesheet"
+<!-- <link rel="stylesheet"
 	href="http://fonts.googleapis.com/css?family=Roboto:400,100,300,500">
-<link rel="stylesheet" href="assets/bootstrap/css/bootstrap.min.css">
+ -->
+ <link rel="stylesheet" href="assets/bootstrap/css/bootstrap.min.css">
 <link rel="stylesheet" href="assets/css/font-awesome.min.css">
 <link rel="stylesheet" href="assets/css/form-elements.css">
 <link rel="stylesheet" href="assets/css/mystyle.css">
@@ -31,6 +32,7 @@
 <script type="text/javascript" src="assets/js/PostController.js"></script>
 <script type="text/javascript" src="assets/js/SearchController.js"></script>
 <script type="text/javascript" src="assets/js/BlogController.js"></script>
+<script type="text/javascript" src="assets/js/ListController.js"></script>
 <!-- <script type="text/javascript" src="assets/js/switch3.js"></script> -->
 <script type="text/javascript" src="assets/js/core-min.js"></script>
 <script type="text/javascript" src="assets/js/sha256-min.js"></script>
@@ -48,7 +50,7 @@
 			<nav class="navbar navbar-trans navbar-fixed-top" role="navigation">
 				<div class="container">
 					<div class="navbar-header">
-						<a href="blog/latest" id="s-latest"> <img
+						<a href="" id="s-latest" ng-click="load_if_loggedin()"> <img
 							class="navbar-brand" href="#section1" src="assets/img/earth.png"></img>
 						</a>
 					</div>
@@ -60,7 +62,7 @@
 							<li><a id="s-contact" href="#" data-toggle="modal"
 								data-target="#contactmodal"><span
 									class="glyphicon glyphicon-phone-alt"></span>&nbsp; Contact</a></li>
-							<li><a id="s-new" href="blog/new-post" ng-show="logstat =='loggedin'"><span
+							<li><a id="s-new" href="#/blog/new" ng-show="logstat =='loggedin'"><span
 									class="glyphicon glyphicon-pencil"></span>&nbsp; New Blog</a></li>
 							<li>&nbsp;</li>
 						</ul>
@@ -70,7 +72,7 @@
 								aria-expanded="false" id="loggedout"><i
 									class="fa fa-user-times fa-lg"></i> <span class="caret"></span></a>
 								<ul class="dropdown-menu" id="inactive-profile-drop">
-									<li id="in-out"><a href="#">
+									<li id="in-out"><a href="#" ng-click="load_if_loggedin()">
 										<span class="glyphicon glyphicon-user"></span>&nbsp; &nbsp; Login/Register</a></li>
 								</ul>
 							</li>
@@ -79,13 +81,13 @@
 								aria-expanded="false" id="loginstat">
 								<i class="fa fa-user fa-lg"></i> &nbsp;a@b.ccc<span class="caret"></span></a>
 								<ul class="dropdown-menu" id="active-profile-drop">
-									<li><a id="s-new" href="user/update"><span class="glyphicon glyphicon-pencil"></span> Update User</a></li>
-									<li><a id="s-list" href="blog/list">Recent Blogs</a></li>
+									<li><a id="s-new" href="#/user/update"><span class="glyphicon glyphicon-pencil"></span> Update User</a></li>
+									<li><a id="s-list" href="#/blog/list">Recent Blogs</a></li>
 									<li id="in-out"><a ng-click="profile_logout()"><span class="glyphicon glyphicon-log-out"></span>&nbsp; &nbsp; Logout</a></li>
 								</ul>
 							</li>
 						</ul>
-						<div class="col-sm-3 col-md-3 pull-right">
+						<div class="col-sm-3 col-md-3 pull-right" ng-controller="SearchController">
 							<form class="navbar-form" role="search">
 								<div class="input-group">
 									<input type="text" ng-model="searchText" 

@@ -58,6 +58,10 @@ public class Blog {
 		public void setComments(List comments) {
 			this.comments = comments;
 		}		
+		public void stripContentAt(int len) {
+			blogContent = blogContent.substring(0, Math.min(blogContent.length(),30));
+			System.out.println("Blog.stripContentAt() \"" + blogContent + "\"");
+		}
 		@PrePersist
 		public void prePersist(){
 			blogCreatedTimeStamp = (blogCreatedTimeStamp==null)?new Date():blogCreatedTimeStamp;
