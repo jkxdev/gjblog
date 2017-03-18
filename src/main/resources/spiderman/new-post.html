@@ -1,10 +1,27 @@
 <section class="container-fluid" id="section-form">
 	<div class="container">
-		<div class="row">
-			<!-- Blog Sidebar Widgets Column -->
-			<div class="col-md-3">
-	
+		<div class="row transwell added-bottom added-top">
+			<!-- Blog Sidebar Widgets Column --><div class="col-md-3" ng-controller="favsController">
 				<!-- Blog Categories Well -->
+				<div class="well transwell">
+					<h4>Favourite Posts</h4>
+					<ul class="list-unstyled">
+						<li ng-repeat = "fav in Favs track by $index"><a href="{{ fav.link }}">{{ fav.title }}</a></li>
+					</ul>
+				</div>
+				<div class="well transwell">
+					<h4>Invite Some one to this post</h4>
+					<form role="form">
+						<div class="form-group">
+							<input class="form-control" type="email"></input>
+						</div>
+						<button type="submit" class="btn btn-primary">Invite</button>
+					</form>
+				</div>
+			</div>
+<!-- 			<div class="col-md-3 ">
+	
+				Blog Categories Well
 				<div class="well transwell">
 					<h4>Favourite Posts</h4>
 					<ul class="list-unstyled">
@@ -25,7 +42,7 @@
 				</div>
 	
 				<hr>
-			</div>
+			</div> -->
 			<div class="col-lg-6 gj-blog-form">
 				<div class="row">
 					<form>
@@ -60,35 +77,26 @@
 				</div>
 			</div>
 			<!-- Blog Sidebar Widgets Column -->
-			<div class="col-md-3">
-				<div class="well transwell">
+			<div class="col-md-3" ng-controller="chatController">
+				<div class="container-fluid">
+ 				<div class="well transwell scroll-message">
 					<h3>Messages</h3>
-					<p id="blog-posted">
-						<a href="#">Start Bootstrap</a> | August 24, 2013 at 9:00 PM
-					</p>
-					<p class="message-post">message content truncated to 50
-						characters</p>
-					<hr>
-					<p id="blog-posted">
-						<a href="#">Start Bootstrap</a> | August 24, 2013 at 9:00 PM
-					</p>
-					<p class="message-post">message content truncated to 50
-						characters</p>
-					<hr>
-					<p id="blog-posted">
-						<a href="#">Start Bootstrap</a> | August 24, 2013 at 9:00 PM
-					</p>
-					<p class="message-post">message content truncated to 50
-						characters</p>
-					<hr>
-					<p id="blog-posted">
-						<a href="#">Start Bootstrap</a> | August 24, 2013 at 9:00 PM
-					</p>
-					<p class="message-post">message content truncated to 50
-						characters</p>
-					<hr>
+					<form>
+						<div class="form-group">
+							<label for="Name-input" class="col-2 col-form-label">Type Here</label>
+							<div class="col-9">
+								<input class="form-control" ng-model="myMsg">
+							</div>
+						</div>
+						
+						<button type="submit" class="btn btn-primary" ng-click="sendchat()">Update</button>
+						
+					</form>
+					<ul ng-repeat = "data in MyChat track by $index" class="list-unstyled">
+						 <li> {{ data }} </li>
+					</ul>
 				</div>
-	
+			</div>
 			</div>
 	
 		</div>

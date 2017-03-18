@@ -2,7 +2,7 @@
 
 html, body {
 	height: 100%;
-	background: center no-repeat fixed url('../img/bg.png');
+	background: center no-repeat fixed url('../img/chinese.jpg');
 	background-size: cover;
 	color: #444;
 	font-family: 'Questrial', sans-serif;
@@ -159,7 +159,7 @@ section {
 }
 
 #section-blog {
-	background-color: #fff;
+	background-color: rgba(0, 0, 0, 0.1);
 }
 
 #section3 {
@@ -169,6 +169,14 @@ section {
 
 #section5 {
 	background-color: #fff;
+}
+.blogHead {
+	margin-right: 0px !important;
+	margin-left: 0px !important;
+	/*background-color: rgba(68, 60, 60, 0.49) !important;*/
+	color: #fcf8e3 !important;
+    padding-left: 15px;
+    padding-right: 15px;
 }
 
 #section6 {
@@ -185,7 +193,12 @@ section {
 	padding-top: 40px;
 	padding-bottom: 40px;
 }
-
+.added-top{
+	padding-top:25px;
+}
+.added-bottom {
+	padding-bottom:50px;
+}
 .img-centre {
 	width: 200px;
 	height: 250px;

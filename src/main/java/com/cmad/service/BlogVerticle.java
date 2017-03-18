@@ -234,7 +234,7 @@ public class BlogVerticle  extends AbstractVerticle {
 			
 ///////
 			Query query = dataStore.createQuery(Blog.class).field("blog_id").equal(blogId);
-
+			
 			UpdateOperations ops = dataStore.createUpdateOperations(Blog.class)
 					.push("comments", commentDTO);
 
@@ -246,7 +246,10 @@ public class BlogVerticle  extends AbstractVerticle {
 			if(results == null || results.getUpdatedCount() <= 0){
 				message.fail(404, "Pr2. No Record updated as there is no blog with id "+blogId);
 			}else{
-				message.reply(Json.encodePrettily(commentDTO));
+				final Query<Blog> outQuery = dataStore.createQuery(Blog.class)
+						.field(Mapper.ID_KEY).equal(blogId);
+				final Blog actualBlog  = outQuery.get();
+				message.reply(Json.encodePrettily(actualBlog));
 			}
 		});
 	}

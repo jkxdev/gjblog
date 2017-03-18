@@ -106,7 +106,7 @@ public class RegistrationVerticle extends AbstractVerticle {
 			if(results == null || results.getUpdatedCount() <= 0){
 				message.fail(404, "Pr2. No Record updated as there is no user by name "+userDetail.getUsername());
 			}else{
-				message.reply(Json.encodePrettily(results.getUpdatedCount()));
+				message.reply(Json.encodePrettily(userDetail));
 			}
 		});
 	}

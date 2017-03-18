@@ -1,8 +1,8 @@
 <section class="container-fluid" id="section-update-user">
 	<div class="container">
-		<div class="row">
+		<div class="row transwell added-bottom added-top">
 			<!-- Blog Sidebar Widgets Column -->
-			<div class="col-md-3">
+			<div class="col-md-3" ng-controller="favsController">
 				<!-- Blog Categories Well -->
 				<div class="well transwell">
 					<h4>Favourite Posts</h4>
@@ -49,14 +49,14 @@
 			            	<input class="form-control my-blog-tag" data-role="tagsinput" id="blog-tags" ng-model="regData.areaofinterest">
 			            </div>
 						<br>
-						<button type="submit" class="btn btn-primary" ng-click="updateProfile()">Update</button>
+						<button type="submit" class="btn btn-primary" ng-click="UpdateProfile()">Update</button>
 						
 					</form>
 	
 				</div>
 			</div>
 			<!-- Blog Sidebar Widgets Column -->
-			<div class="col-md-3">
+			<div class="col-md-3" ng-controller="chatController">
 				<div class="container-fluid">
  				<div class="well transwell scroll-message">
 					<h3>Messages</h3>

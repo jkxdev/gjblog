@@ -207,24 +207,3 @@ BlogModule.config(function($routeProvider,$locationProvider) {
 	//$locationProvider.html5Mode(true);
 });
 
-BlogModule.factory('ChatData','$websocket', '$location', function($websocket,$location) {
-    // Open a WebSocket connection
-	var chatpath  = 'ws://' + $location.host() + '/chat';
-	console.log(chatpath);
-    var dataStream = $websocket(chatpath);
-
-    var collection = [];
-
-    dataStream.onMessage(function(message) {
-      collection.push(JSON.parse(message.data));
-    });
-
-    var methods = {
-      collection: collection,
-      get: function() {
-        dataStream.send(JSON.stringify({ action: 'get' }));
-      }
-    };
-
-    return methods;
-});

@@ -89,6 +89,7 @@ form label {
 .transwell {
 	background-color: rgba(68, 60, 60, 0.49) !important;
 	color: #fcf8e3 !important;
+	border: 0px !important;
 }
 
 .transwell a {
