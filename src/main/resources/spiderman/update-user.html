@@ -4,7 +4,7 @@
 			<!-- Blog Sidebar Widgets Column -->
 			<div class="col-md-3">
 				<!-- Blog Categories Well -->
-				<div class="well">
+				<div class="well transwell">
 					<h4>Favourite Posts</h4>
 					<ul class="list-unstyled">
 						<li ng-repeat = "fav in Favs track by $index"><a href="{{ fav.link }}">{{ fav.title }}</a></li>
@@ -14,40 +14,40 @@
 			<div class="col-lg-6 gj-blog-form">
 				<div class="row">
 					<form>
-						<div class="form-group">
-							<label for="Name-input" class="col-2 col-form-label">Name</label>
+					  <div class="form-group">
+							<label for="Name-input disabled" class="col-2 col-form-label">Name(email)</label>
 							<div class="col-9">
-								<input class="form-control" type="search" ng-value="Name-input">
+								<p class="form-control-static static-bs-form">{{regData.username}}</p>
 							</div>
 						</div>
 						<div class="form-group">
-							<label for="email-input" class="col-2 col-form-label">Email</label>
+							<label for="email-input" class="col-2 col-form-label">Full Name</label>
 							<div class="col-9">
-								<input class="form-control" type="email" ng-value="email-input">
+								<input class="form-control" type="text" ng-model="regData.fullName" placeholder="{{regData.fullName}}" >
 							</div>
 						</div>
 						<div class="form-group">
 							<label for="password-input" class="col-2 col-form-label">Password</label>
 							<div class="col-9">
-								<input class="form-control" type="password" ng-value="password-input">
+								<input class="form-control" type="password" ng-model="regData.pwd" placeholder="{{regData.pwd}}">
 							</div>
 						</div>
-						<div class="form-group">
+						<!-- <div class="form-group">
 							<label for="password-input" class="col-2 col-form-label">Confirm Password</label>
 							<div class="col-9">
-								<input class="form-control" type="password" ng-value="conf-password-input">
+								<input class="form-control" type="password" placeholder="{{regData.fullName}}">
 							</div>
-						</div>
+						</div> -->
 						<div class="form-group">
 							<label for="tel-input" class="col-2 col-form-label">Telephone</label>
 							<div class="col-9">
-								<input class="form-control" type="tel" value="+91-9900112233" ng-value="tel-input">
+								<input class="form-control" type="tel" ng-model="regData.phno" placeholder="{{regData.phno}}">
 							</div>
 						</div>
-	
-						<label for="tagSelect"><b>Area Of Interest</b></label> <br>
-			            <input class="form-control my-blog-tag" data-role="tagsinput" type="tel" value="Cloud Computing" id="blog-tags">
-						<br>
+						<div class="form-group">
+							<label for="tagSelect"><b>Area Of Interest</b></label> <br>
+			            	<input class="form-control my-blog-tag" data-role="tagsinput" id="blog-tags" ng-model="regData.areaofinterest">
+			            </div>
 						<br>
 						<button type="submit" class="btn btn-primary" ng-click="updateProfile()">Update</button>
 						
@@ -58,7 +58,7 @@
 			<!-- Blog Sidebar Widgets Column -->
 			<div class="col-md-3">
 				<div class="container-fluid">
- 				<div class="well">
+ 				<div class="well transwell scroll-message">
 					<h3>Messages</h3>
 					<form>
 						<div class="form-group">

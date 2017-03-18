@@ -4,6 +4,7 @@
 BlogModule.service('UserService', ['$http','BakBakService',function($http, BakBakService){
 	var result = "HCD: not found";
 	var myBlogList;
+	var userData;
 //	var sendMsg = function(message) {
 //		$rootScope.$broadcast('loginEvent', {event: message});
 //	}
@@ -34,15 +35,39 @@ BlogModule.service('UserService', ['$http','BakBakService',function($http, BakBa
 			});
 	};
 	
+	this.fetchUserData = function(){
+		$http({
+			  method: 'POST',
+			  url: "/api/user/getinfo",
+			  data: null,
+			  headers: { "id":localStorage.getItem("id"),
+				   "tok":localStorage.getItem("tok"),
+				   'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'},
+				   
+			})
+			.success(function(response){
+				userData = response;
+				console.log(response)
+				BakBakService.msgSendService('userDataFetched');
+			})
+			.error(function(response,status){
+				console.log('response erro code is ' + status + "; and the erro text is :\""+ response.responseText + "\"");
+				if(401 == status) {
+					BakBakService.msgSendService('loginFailed');
+				}
+			});
+	};
 	this.getBlogList = function(){
-		var transData = $.map(Object , function (value, key) {
-		    return [[key, value]];
-		});
 		console.log(myBlogList);
 		return myBlogList;
 	};
 	
+	this.getUserData = function() {
+		return userData;
+	};
+	
 }]);
+
 BlogModule.controller('UserController', ['$scope','HomeService','UserService','$location','BakBakService',
 										function($scope, HomeService, UserService,$location,BakBakService) {
 	
@@ -64,6 +89,12 @@ BlogModule.controller('UserController', ['$scope','HomeService','UserService','$
 				favList.push(item_local);
 			});
 			$scope.Favs = favList;
+		}
+		else if(data.event == 'userDataFetched') {
+			$scope.regData = UserService.getUserData();
+			$("#blog-tags").attr("placeholder", $scope.regData.areaofinterest);
+			console.log($scope.regData.areaofinterest);
+			$('#blog-tags').tagsinput();
 		}
     });
 	
@@ -119,8 +150,7 @@ BlogModule.controller('UserController', ['$scope','HomeService','UserService','$
 			console.log("UserController : blog-tags called to loag tags-input");
 			UserService.get("api/blog/favorites/" + localStorage.getItem("id"));
 			$scope.connectToChatserver();
-			//$scope.MyChat = ChatData;
-			//$location.url($location.path());
+			UserService.fetchUserData();
 		}
 		else {
 			BakBakService.msgSendService('authFailed');

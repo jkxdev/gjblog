@@ -9,6 +9,8 @@
   border-radius: 4px;
   max-width: 100%;
   line-height: 22px;
+  width: 100%;
+  height: 34px;
   cursor: text;
 }
 .bootstrap-tagsinput input {

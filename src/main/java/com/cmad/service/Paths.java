@@ -5,6 +5,8 @@ public interface Paths {
 	/////////Verticle1 - RegistrationVerticle
 	public static String P_REGISTRATION = "/api/user/registeration";
 
+	public static String P_GET_USER_INFO = "/api/user/getinfo";
+	
 	public static String P_PROFILE_UPDATE = "/api/user/profileupdate";
 
 	/////////Verticle2 - LoginVerticle 

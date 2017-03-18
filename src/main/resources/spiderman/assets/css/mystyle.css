@@ -24,7 +24,7 @@ a:hover {
 }
 
 .btn, .well, .panel {
-	border-radius: 0;
+	border-radius: 5px;
 }
 
 .btn-blue {
@@ -215,4 +215,12 @@ footer .nav>li>a:hover {
 }
 .my-blog-tag {
 	width:100%;
+}
+.static-bs-form {
+	color:rgba(223, 240, 216,0.7);
+}
+.scroll-message {
+	overflow-y: scroll;
+	height: 400px;
+	position: absolute;
 }

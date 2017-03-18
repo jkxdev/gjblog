@@ -21,6 +21,7 @@ public class RegistrationVerticle extends AbstractVerticle {
 	public void start() throws Exception {
 		handleRegistraion();
 		handleProfileUpdate();
+		handleFetchProfile();
 	}
 
 	private void handleRegistraion() {
@@ -109,7 +110,24 @@ public class RegistrationVerticle extends AbstractVerticle {
 			}
 		});
 	}
+	private void handleFetchProfile() {
+		vertx.eventBus().consumer(Topics.GET_USER_INFO, message -> {
+			String userId = message.body().toString();
+			System.out.println("BlogVerticle.handleFetchBlog() inside --> userId = "+userId);
 
+			Datastore datastore = MongoService.getDataStore();
+			final Query<UserDetail> userDetailQuery = datastore.createQuery(UserDetail.class).field("username").equal(userId);
+			UserDetail user  = userDetailQuery.get();
+			
+			
+			if(user == null){
+				message.fail(404, "Pr2. No Profile found by name :"+ userId);
+			}else{
+				message.reply(Json.encodePrettily(user));
+			}
+		});
+	}
+	
 	private boolean performUserNameValidation(Message<Object> message, UserDetail userDetail, Datastore dataStore) {
 		String userName = userDetail.getUsername();
 		

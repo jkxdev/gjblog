@@ -6,6 +6,8 @@ public interface Topics {
 	public static String REGISTRATION = "com.cisco.cmad.projects.registration";
 	
 	public static String PROFILE_UPDATE = "com.cisco.cmad.projects.profileupdate";
+	
+	public static String GET_USER_INFO = "com.cisco.cmad.projects.profileget";
 
 	/////////Verticle2
 	public static String LOGIN = "com.cisco.cmad.projects.login";

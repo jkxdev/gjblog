@@ -46,6 +46,8 @@ public class MainVerticle extends AbstractVerticle {
 		
 		setRegistrationHandler(vertx);
 		
+		setProfileDataGetHandler(vertx);
+		
 		setProfileUpdateHandler(vertx);
 		
 		setLoginHandler(vertx);
@@ -158,7 +160,30 @@ public class MainVerticle extends AbstractVerticle {
 			});
 		});
 	}
+	
+	private static void setProfileDataGetHandler(Vertx vertx) {
+		router.route(Paths.P_GET_USER_INFO).handler(BodyHandler.create());
+		router.post(Paths.P_GET_USER_INFO).handler(rctx -> {
+			
+			System.out.println("MainVerticle.setProfileDataGetHandler() Got request");			
+//			printHTTPServerRequest(rctx);
 
+			if(!validateToken(rctx))	{
+				rctx.response().setStatusCode(404).end("Token authentication failed for Profile update please Re-login");
+				return;
+			}
+			String uId = rctx.request().getHeader("id");
+			System.out.println("MainVerticle.setFavoriteBlogsFetchHandler() uId = "+uId);
+			vertx.eventBus().send(Topics.GET_USER_INFO, uId, r -> {
+				if (r.result() != null) {
+					rctx.response().setStatusCode(200).end(r.result().body().toString());
+				} else {
+					rctx.response().setStatusCode(404).end(r.cause().getMessage());
+				}
+			});
+		});
+	}
+	
 	private static void setProfileUpdateHandler(Vertx vertx) {
 		router.route(Paths.P_PROFILE_UPDATE).handler(BodyHandler.create());
 		router.post(Paths.P_PROFILE_UPDATE).handler(rctx -> {
