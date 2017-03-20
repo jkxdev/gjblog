@@ -53,14 +53,14 @@ BlogModule.controller('chatController', ['$scope','$location','BakBakService', f
 			
            ws.onclose = function()
            { 
-        	   console("Connection is closed..."); 
+        	   console.log("Connection is closed..."); 
            };
         }
         
         else
         {
            // The browser doesn't support WebSocket
-        	console("WebSocket NOT supported by your Browser!");
+        	console.log("WebSocket NOT supported by your Browser!");
         }
     }
 	

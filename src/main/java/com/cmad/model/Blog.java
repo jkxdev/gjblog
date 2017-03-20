@@ -59,7 +59,7 @@ public class Blog {
 			this.comments = comments;
 		}		
 		public void stripContentAt(int len) {
-			blogContent = blogContent.substring(0, Math.min(blogContent.length(),30));
+			blogContent = blogContent.substring(0, Math.min(blogContent.length(),len));
 			System.out.println("Blog.stripContentAt() \"" + blogContent + "\"");
 		}
 		@PrePersist

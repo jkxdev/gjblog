@@ -325,32 +325,36 @@ public class BlogVerticle  extends AbstractVerticle {
 				}
 			}
 			
-			Set<Blog> finalBlogsSet = new HashSet(titleBasedBlogsList);
-			
-			if(finalBlogsSet == null || finalBlogsSet.isEmpty())	
-			{
-				finalBlogsSet = new HashSet(tagBasedBlogsList);
-			}	
-			else	
-			{
-				for(Blog tagBlog : tagBasedBlogsList)	
-				{
-					finalBlogsSet.add(tagBlog);
-				}
-			}
+//			Set<Blog> finalBlogsSet = new HashSet(titleBasedBlogsList);
+//			
+//			if(finalBlogsSet == null || finalBlogsSet.isEmpty())	
+//			{
+//				finalBlogsSet = new HashSet(tagBasedBlogsList);
+//			}	
+//			else	
+//			{
+//				for(Blog tagBlog : tagBasedBlogsList)	
+//				{
+//					finalBlogsSet.add(tagBlog);
+//				}
+//			}
 			/////
 			
-			if(finalBlogsSet == null || finalBlogsSet.size() <= 0)	{
+//			if(finalBlogsSet == null || finalBlogsSet.size() <= 0)	{
+//				message.fail(404, "No Blog blogs available based on search criteria");
+//			}
+			if(tagBasedBlogsList == null || tagBasedBlogsList.size() <=0){
 				message.fail(404, "No Blog blogs available based on search criteria");
-			}	
-			else	
+			}
+			else
 			{
 				//Hashtable results = new Hashtable();
-				for(Blog blog : finalBlogsSet)	{
+				//for(Blog blog : finalBlogsSet)	{
 					//results.put(blog.getBlog_id(), blog.getBlogTitle(),blogstr);
-				}
+				//}
 				//message.reply(Json.encodePrettily(results));
-				message.reply(Json.encodePrettily(finalBlogsSet));
+				//message.reply(Json.encodePrettily(finalBlogsSet));
+				message.reply(Json.encodePrettily(tagBasedBlogsList));
 			}				
 //			message.reply(Json.encodePrettily(blogs));
 			MongoService.close();

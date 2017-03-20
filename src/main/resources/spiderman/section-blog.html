@@ -66,15 +66,15 @@
 						<!-- Posted Comments -->
 	
 						<!-- Comment -->
-						<div class="media" ng-repeat="commentData">
+						<div class="media" ng-repeat="comment in commentData">
 							<a class="pull-left" href="#"> <img class="media-object"
 								src="http://placehold.it/64x64" alt="">
 							</a>
 							<div class="media-body">
 								<h4 class="media-heading">
-									{{commentData.commentAuthorUsername}} <small>{{commentData.commentCreatedTimeStamp}}</small>
+									{{comment.commentAuthorUsername}} <small>{{comment.commentCreatedTimeStamp}}</small>
 								</h4>
-								{{commentData.commentText}}
+								{{comment.commentText}}
 							</div>
 						</div>
 	
