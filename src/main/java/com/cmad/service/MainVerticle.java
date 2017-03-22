@@ -69,7 +69,7 @@ public class MainVerticle extends AbstractVerticle {
 		setValidateHandler(vertx);
 		// ------------------------------------------//
 
-		vertx.createHttpServer().requestHandler(router::accept).websocketHandler(new CustomWebSocketHandler()).listen(8080);
+		vertx.createHttpServer().requestHandler(router::accept).websocketHandler(new CustomWebSocketHandler()).listen(8082);
 	
 	}
 	

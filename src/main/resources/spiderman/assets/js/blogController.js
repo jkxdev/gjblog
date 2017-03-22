@@ -53,9 +53,9 @@ BlogModule.service('BlogService', ['$http','BakBakService',function($http,BakBak
 				   
 			})
 			.success(function(response){
-			myBlog = response;
-			console.log(response)
-			BakBakService.msgSendService('blogFetched');
+				myBlog = response;
+				console.log(response)
+				BakBakService.msgSendService('blogFetched');
 			})
 			.error(function(response,status){
 				console.log('response erro code is ' + status + "; and the erro text is :\""+ response.responseText + "\"");
@@ -75,9 +75,9 @@ BlogModule.service('BlogService', ['$http','BakBakService',function($http,BakBak
 				   
 			})
 			.success(function(response){
-			myBlog = response;
-			console.log(response)
-			BakBakService.msgSendService('blogFetched');
+				myBlog = response;
+				console.log(response)
+				BakBakService.msgSendService('blogFetched');
 			})
 			.error(function(response,status){
 				console.log('response erro code is ' + status + "; and the erro text is :\""+ response.responseText + "\"");

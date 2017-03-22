@@ -49,7 +49,41 @@ BlogModule.controller('SearchController', ['$scope', 'SearchService', 'HomeServi
 		if(HomeService.isValidLogin() == true) {
 			var url = BakBakService.getHomePath() + '/api/blog/searchblogs/' + $scope.searchText;
 			SearchService.get(url);
+			BakBakService.msgSendService('newSearchRequested');
 		}
 	}
 
+}]);
+BlogModule.controller('ListController', ['$scope', 'SearchService', function($scope, SearchService) {
+	var blogLoadStatus = "NOT_LOADED";
+	$scope.$on('loginEvent', function(event, data) {
+		if(data.event == 'newSearchRequested') {
+			console.log('searchResultsFetched event recieved ; getting the results');
+			if(blogLoadStatus == "LOADED") {
+				$scope.resultBlogs = {};
+				blogLoadStatus = "RESET";
+			}
+		}
+		else if(data.event == 'searchResultsFetched') {
+			console.log('searchResultsFetched event recieved ; swithing the blog list view');
+			if(blogLoadStatus == "RESET") {
+				loadResultBLogs();
+			}
+		}	
+	});
+	var loadResultBLogs = function() {
+		var blogList = [];
+		var blogi = SearchService.getResults();
+		blogi.forEach(function(item, index){
+			var item_local = {link:"", title:"",content:""};
+			item_local.link = "#/blog/get/" + item.blog_id;
+			item_local.title = item.blogTitle;
+			item_local.content = item.blogContent;
+			console.log("blog entry : " + item_local.link + " TITLE: " + item_local.title);
+			blogList.push(item_local);
+		});
+		$scope.resultBlogs = blogList;
+		blogLoadStatus = "LOADED";
+	};
+	loadResultBLogs();
 }]);
