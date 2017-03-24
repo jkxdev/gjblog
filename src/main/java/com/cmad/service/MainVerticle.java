@@ -4,12 +4,15 @@ import java.util.Base64;
 import java.util.Iterator;
 
 import com.cmad.auth.AuthData;
+import com.cmad.rabbitmq.RPCRabbitMqServerVerticle;
 
 import io.vertx.core.AbstractVerticle;
 import io.vertx.core.DeploymentOptions;
 import io.vertx.core.Future;
 import io.vertx.core.MultiMap;
 import io.vertx.core.Vertx;
+import io.vertx.core.VertxOptions;
+import io.vertx.core.eventbus.DeliveryOptions;
 import io.vertx.core.http.HttpServerRequest;
 import io.vertx.core.http.HttpServerResponse;
 import io.vertx.core.json.JsonObject;
@@ -21,18 +24,24 @@ import io.vertx.ext.web.handler.StaticHandler;
 public class MainVerticle extends AbstractVerticle {
 	
 	private static Router router;
+	public static Vertx vertx;
 
 	public void start(Future<Void> future) throws Exception {
 		//startServer("start()");
 	}
 	private static void startServer(String str)	{
 		System.out.println("starting...from "+str);
-		Vertx vertx = Vertx.vertx();
+		
+		VertxOptions vertxOps = new VertxOptions();
+		vertxOps.setMaxWorkerExecuteTime(VertxOptions.DEFAULT_MAX_WORKER_EXECUTE_TIME * 60);
+		vertx = Vertx.vertx(vertxOps);
+		
+		
 		router = Router.router(vertx);
 		vertx.deployVerticle(RegistrationVerticle.class.getName(), new DeploymentOptions().setWorker(true));
 		vertx.deployVerticle(LoginVerticle.class.getName(), new DeploymentOptions().setWorker(true));
 		vertx.deployVerticle(BlogVerticle.class.getName(), new DeploymentOptions().setWorker(true));
-		
+		vertx.deployVerticle(RPCRabbitMqServerVerticle.class.getName(), new DeploymentOptions().setWorker(true));
 		// ------------------------------------------//
 		router.route("/about").handler(rctx -> {
 			HttpServerResponse response = rctx.response();
@@ -69,7 +78,7 @@ public class MainVerticle extends AbstractVerticle {
 		setValidateHandler(vertx);
 		// ------------------------------------------//
 
-		vertx.createHttpServer().requestHandler(router::accept).websocketHandler(new CustomWebSocketHandler()).listen(8082);
+		vertx.createHttpServer().requestHandler(router::accept).listen(8082);
 	
 	}
 	
@@ -85,8 +94,8 @@ public class MainVerticle extends AbstractVerticle {
 		router.post(Paths.P_LOGIN).handler(rctx -> {
 			System.out.println("MainVerticle.setLoginHandler() got request");			
 			printHTTPServerRequest(rctx);
-
-			vertx.eventBus().send(Topics.LOGIN, rctx.getBodyAsJson(), r -> {
+			DeliveryOptions deliveryOps = getCustomDeliveryOptions();
+			vertx.eventBus().send(Topics.LOGIN, rctx.getBodyAsJson(),deliveryOps, r -> {
 				System.out.println("MainVerticle.setLoginHandler() r = "+r);
 				System.out.println("MainVerticle.setLoginHandler() r.result() " + r.result());
 
@@ -112,7 +121,8 @@ public class MainVerticle extends AbstractVerticle {
 	private static void setValidateHandler(Vertx vertx) {
 		router.route("/api/validate").handler(BodyHandler.create());
 		router.post("/api/validate").handler(rctx -> {
-			vertx.eventBus().send("com.cisco.cmad.projects.validateUser", rctx.getBodyAsJson(), r -> {
+			DeliveryOptions deliveryOps = getCustomDeliveryOptions();
+			vertx.eventBus().send("com.cisco.cmad.projects.validateUser", rctx.getBodyAsJson(), deliveryOps, r -> {
 				System.out.println("MainVerticle.start() validateUser respoonse " + r.result().body().toString());
 				
 				rctx.response().setStatusCode(200).end(r.result().body().toString());
@@ -125,8 +135,8 @@ public class MainVerticle extends AbstractVerticle {
 	private static void setLogoutHandler(Vertx vertx) {
 		router.route(Paths.P_LOGOUT).handler(BodyHandler.create());
 		router.post(Paths.P_LOGOUT).handler(rctx -> {
-
-			vertx.eventBus().send(Topics.LOGOUT, rctx.getBodyAsJson(), r -> {
+			DeliveryOptions deliveryOps = getCustomDeliveryOptions();
+			vertx.eventBus().send(Topics.LOGOUT, rctx.getBodyAsJson(), deliveryOps, r -> {
 				System.out.println("MainVerticle.setLogoutHandler() r = "+r);
 				System.out.println("MainVerticle.setLogoutHandler() r.result() " + r.result());
 
@@ -146,9 +156,9 @@ public class MainVerticle extends AbstractVerticle {
 
 		router.route(Paths.P_REGISTRATION).handler(BodyHandler.create());
 		router.post(Paths.P_REGISTRATION).handler(rctx -> {
-
+			DeliveryOptions deliveryOps = getCustomDeliveryOptions();
 			
-			vertx.eventBus().send(Topics.REGISTRATION, rctx.getBodyAsJson(), r -> {
+			vertx.eventBus().send(Topics.REGISTRATION, rctx.getBodyAsJson(), deliveryOps, r -> {
 				if (r.result() != null) {
 					String resp_string =  new String(Base64.getEncoder().encode(r.result().body().toString().getBytes()));
 					System.out.println("MainVerticle.setRegistrationHandler() result is :" + resp_string );
@@ -174,7 +184,8 @@ public class MainVerticle extends AbstractVerticle {
 			}
 			String uId = rctx.request().getHeader("id");
 			System.out.println("MainVerticle.setFavoriteBlogsFetchHandler() uId = "+uId);
-			vertx.eventBus().send(Topics.GET_USER_INFO, uId, r -> {
+			DeliveryOptions deliveryOps = getCustomDeliveryOptions();
+			vertx.eventBus().send(Topics.GET_USER_INFO, uId, deliveryOps, r -> {
 				if (r.result() != null) {
 					rctx.response().setStatusCode(200).end(r.result().body().toString());
 				} else {
@@ -195,8 +206,8 @@ public class MainVerticle extends AbstractVerticle {
 				rctx.response().setStatusCode(404).end("Token authentication failed for Profile update please Re-login");
 				return;
 			}
-			
-			vertx.eventBus().send(Topics.PROFILE_UPDATE, rctx.getBodyAsJson(), r -> {
+			DeliveryOptions deliveryOps = getCustomDeliveryOptions();
+			vertx.eventBus().send(Topics.PROFILE_UPDATE, rctx.getBodyAsJson(), deliveryOps, r -> {
 				if (r.result() != null) {
 					rctx.response().setStatusCode(200).end(r.result().body().toString());
 				} else {
@@ -213,7 +224,8 @@ public class MainVerticle extends AbstractVerticle {
 		System.out.println("MainVerticle.setBlogCreateHandler() Got request");		
 		//printHTTPServerRequest(rctx);
 		if(true == validateToken(rctx)){
-			vertx.eventBus().send(Topics.CREATE_NEW_BLOG, rctx.getBodyAsJson(), r -> {
+			DeliveryOptions deliveryOps = getCustomDeliveryOptions();
+			vertx.eventBus().send(Topics.CREATE_NEW_BLOG, rctx.getBodyAsJson(), deliveryOps, r -> {
 					if (r.result() != null) {
 						rctx.response().setStatusCode(200).end(r.result().body().toString());
 					} else {
@@ -259,7 +271,8 @@ public class MainVerticle extends AbstractVerticle {
 			if(true == validateToken(rctx)) {
 				String uId = rctx.request().getHeader("id");
 				System.out.println("MainVerticle.setFavoriteBlogsFetchHandler() uId = "+uId);
-				vertx.eventBus().send(Topics.GET_FAV_BLOGS_LIST, uId, r -> {
+				DeliveryOptions deliveryOps = getCustomDeliveryOptions();
+				vertx.eventBus().send(Topics.GET_FAV_BLOGS_LIST, uId, deliveryOps, r -> {
 					if (r.result() != null) {
 						rctx.response().setStatusCode(200).end(r.result().body().toString());
 					} else {
@@ -283,7 +296,8 @@ public class MainVerticle extends AbstractVerticle {
 			if(true == validateToken(rctx)) {
 				String blogId = rctx.pathParams().get("blogId");
 				System.out.println("MainVerticle.setBlogFetchHandler() blogId = "+blogId);
-				vertx.eventBus().send(Topics.GET_BLOG_WITH_COMMENTS, blogId, r -> {
+				DeliveryOptions deliveryOps = getCustomDeliveryOptions();
+				vertx.eventBus().send(Topics.GET_BLOG_WITH_COMMENTS, blogId, deliveryOps, r -> {
 					if (r.result() != null) {
 						rctx.response().setStatusCode(200).end(r.result().body().toString());
 					} else {
@@ -310,7 +324,8 @@ public class MainVerticle extends AbstractVerticle {
 				String uId = rctx.request().getHeader("id");
 				System.out.println("MainVerticle.setSearchBlogsHandler() searchTxt = "+searchTxt);
 				System.out.println("MainVerticle.setSearchBlogsHandler() uId = "+uId);
-				vertx.eventBus().send(Topics.SEARCH_BLOGS, searchTxt, r -> {
+				DeliveryOptions deliveryOps = getCustomDeliveryOptions();	
+				vertx.eventBus().send(Topics.SEARCH_BLOGS, searchTxt, deliveryOps, r -> {
 					if (r.result() != null) {
 						rctx.response().setStatusCode(200).end(r.result().body().toString());
 					} else {
@@ -338,8 +353,8 @@ public class MainVerticle extends AbstractVerticle {
 			System.out.println("MainVerticle.setUpdateCommentsHandler() blog_Id:-->"+blog_Id);
 			tempJsonObj.put("blogId", blog_Id);
 			tempJsonObj.put("commentData", rctx.getBodyAsJson());
-
-			vertx.eventBus().send(Topics.UPDATE_COMMENTS, tempJsonObj, r -> {
+			DeliveryOptions deliveryOps = getCustomDeliveryOptions();
+			vertx.eventBus().send(Topics.UPDATE_COMMENTS, tempJsonObj, deliveryOps, r -> {
 				if (r.result() != null) {
 					rctx.response().setStatusCode(200).end(r.result().body().toString());
 				} else {
@@ -358,6 +373,16 @@ public class MainVerticle extends AbstractVerticle {
 		authData.setTok(rctx.request().getHeader("tok"));
 		isValid = authData.validate();
 		System.out.println("MainVerticle.validateToken() isValid = "+isValid);
+		return isValid;
+	}
+	
+	public static boolean validateToken(String id, String tok){
+		boolean isValid = false;
+
+		AuthData authData = new AuthData(id);
+		authData.setTok(tok);
+		isValid = authData.validate();
+		System.out.println("MainVerticle.validateToken(with id and tok) isValid = "+isValid);
 		return isValid;
 	}
 	
@@ -396,5 +421,10 @@ public class MainVerticle extends AbstractVerticle {
 		}
 		
 		System.out.println("MainVerticle.printHTTPServerRequest() httpServerRequest.uri() = "+httpServerRequest.params());
+	}
+	private static DeliveryOptions getCustomDeliveryOptions()   {
+	    DeliveryOptions deliveryOps = new DeliveryOptions();
+	    deliveryOps.setSendTimeout(600*1000*6);//setting timeout of 600sec*6(60mins)
+	    return deliveryOps;
 	}
 }

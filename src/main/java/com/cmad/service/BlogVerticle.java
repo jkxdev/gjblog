@@ -239,10 +239,7 @@ public class BlogVerticle  extends AbstractVerticle {
 					.push("comments", commentDTO);
 
 			UpdateResults results = dataStore.update(query, ops, false);
-///////			
-			
-			MongoService.close();
-
+///////		
 			if(results == null || results.getUpdatedCount() <= 0){
 				message.fail(404, "Pr2. No Record updated as there is no blog with id "+blogId);
 			}else{
@@ -252,6 +249,7 @@ public class BlogVerticle  extends AbstractVerticle {
 				final Blog actualBlog  = outQuery.get();
 				message.reply(Json.encodePrettily(actualBlog));
 			}
+			MongoService.close();
 		});
 	}
 	

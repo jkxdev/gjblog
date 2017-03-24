@@ -1,7 +1,7 @@
 /**
  * 
  */
-BlogModule.factory('ChatData','$websocket', '$location', function($websocket,$location) {
+/*BlogModule.factory('ChatData','$websocket', '$location', function($websocket,$location) {
     // Open a WebSocket connection
 	var chatpath  = 'ws://' + $location.host() + '/chat';
 	console.log(chatpath);
@@ -22,7 +22,7 @@ BlogModule.factory('ChatData','$websocket', '$location', function($websocket,$lo
 
     return methods;
 });
-		
+*/		
 		
 BlogModule.controller('chatController', ['$scope','$location','BakBakService', function($scope,$location,BakBakService) {
 	$scope.MyChat = [];
@@ -32,8 +32,10 @@ BlogModule.controller('chatController', ['$scope','$location','BakBakService', f
 		console.log("char COntroller start");
         if ("WebSocket" in window)
         {
+        	id = "id=" + localStorage.getItem("id");
+        	token = "tok=" + localStorage.getItem("tok");
            // Let us open a web socket
-           ws = new WebSocket(BakBakService.getHomePath("ws") + "/chat");
+           ws = new WebSocket(BakBakService.getHomePath("ws",8085) + "/chat?"+id+"&"+token);
 			
            ws.onopen = function()
            {

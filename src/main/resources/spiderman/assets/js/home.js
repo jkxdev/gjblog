@@ -1,8 +1,8 @@
 var BlogModule = angular.module('Blog-App', ['ngRoute','ngWebSocket']);
 
 BlogModule.service('BakBakService', ['$http','$rootScope','$location',function($http,$rootScope,$location){
-	this.getHomePath = function(prot="http") {
-		var homePath = prot + '://'+ $location.host() + ':' + $location.port();
+	this.getHomePath = function(prot="http",port=$location.port()) {
+		var homePath = prot + '://'+ $location.host() + ':' + port;
 		console.log('BakBakService.getHomePath : returns :',homePath);
 		return homePath;
 	}

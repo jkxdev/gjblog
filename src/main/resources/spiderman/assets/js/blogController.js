@@ -156,7 +156,8 @@ BlogModule.controller("BlogController", function($scope, $routeParams, BlogServi
 //				
 //			}
 //		}
-		$scope.commentData=rec_blog.comments;
+		temp_comnt = rec_blog.comments.reverse();
+		$scope.commentData=temp_comnt;
 	};
 	$scope.PostComment = function(){
 		blogCommentPosted = "{\"commentAuthorUsername\":\""+ localStorage.getItem("id") +
